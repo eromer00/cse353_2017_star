@@ -10,6 +10,8 @@ public class testNode {
         bnode.run();
         cnode.run();
 
+        //test for github
+
         /*
         Frame a = new Frame(1, 2, "succ");
         Frame b = new Frame(0, 4, "ayy lmao");
