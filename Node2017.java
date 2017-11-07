@@ -31,10 +31,18 @@ public class Node2017 extends Thread {
 
     @Override
     public void run() {
+        /*
         while(!outdata.isEmpty()) {
             System.out.println(outdata.get(0));
             outdata.remove(0);
         }
+        */
+
+        NodeSend a = new NodeSend(outdata);
+        NodeReceive b = new NodeReceive();
+
+        a.run();
+        b.run();
     }
 
 
@@ -47,4 +55,32 @@ public class Node2017 extends Thread {
     public void setNodenum(int x) {
         this.nodenum = x;
     }
+}
+
+class NodeSend extends Thread {
+
+    private ArrayList<String> frames;
+
+    public NodeSend(ArrayList<String> x) {
+        this.frames = x;
+    }
+
+    @Override
+    public void run() {
+        while(!frames.isEmpty()) {
+            System.out.println(frames.get(0));
+            frames.remove(0);
+        }
+    }
+}
+
+class NodeReceive extends Thread {
+
+    @Override
+    public void run() {
+        for(int i = 0; i < 5; i++) {
+            System.out.println("This node is receiving: " + i);
+        }
+    }
+
 }
