@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class Node2017 extends Thread {
@@ -7,6 +9,7 @@ public class Node2017 extends Thread {
     ArrayList<String> outdata = new ArrayList<>();
     private int portnum;
     private int nodenum;
+    //private Socket sock;
 
     //read file, setup frame for all data to be sent (frame: [src][dest][size/ack][data])
     public Node2017(String filename, int portnum, int nodenum) {
@@ -27,6 +30,8 @@ public class Node2017 extends Thread {
         } catch (Exception e) {
             System.out.println("Error setting up node " + nodenum);
         }
+
+
     }
 
     @Override
@@ -38,23 +43,44 @@ public class Node2017 extends Thread {
         }
         */
 
-        NodeSend a = new NodeSend(outdata);
-        NodeReceive b = new NodeReceive();
+        try {
+            System.out.println("1");
+            Socket sock = new Socket("127.0.0.1", getPortNum());
 
-        a.run();
-        b.run();
+            System.out.println("2");
+            //NodeReceive b = new NodeReceive(this.sock);
+
+            System.out.println("3");
+            //NodeSend a = new NodeSend(outdata);
+
+            System.out.println("4");
+            //a.run();
+
+            System.out.println("5");
+            //b.run();
+
+            System.out.println("6");
+            sock.close();
+        } catch(IOException e) {
+            System.out.println("Error starting node: " + e.getStackTrace());
+        }
+
     }
 
 
 
 
-    public void setPortnum(int x) {
+    private void setPortnum(int x) {
         this.portnum = x;
     }
 
-    public void setNodenum(int x) {
+    private void setNodenum(int x) {
         this.nodenum = x;
     }
+
+    public int getPortNum() { return portnum; }
+
+    public int getNodenum() { return nodenum; }
 }
 
 class NodeSend extends Thread {
@@ -67,19 +93,26 @@ class NodeSend extends Thread {
 
     @Override
     public void run() {
-        while(!frames.isEmpty()) {
-            System.out.println(frames.get(0));
-            frames.remove(0);
-        }
+
     }
 }
 
 class NodeReceive extends Thread {
 
+    Socket sock;
+
+    public NodeReceive(Socket sck) {
+        this.sock = sck;
+    }
+
     @Override
     public void run() {
-        for(int i = 0; i < 5; i++) {
-            System.out.println("This node is receiving: " + i);
+        try {
+            //placeholder
+            int i = 0;
+            sleep(1000);
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
