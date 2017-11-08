@@ -28,7 +28,7 @@ public class Node2017 extends Thread {
 
             }
         } catch (Exception e) {
-            System.out.println("Error setting up node " + nodenum);
+            System.out.println("Error setting up node " + nodenum + "\nERROR: " + e);
         }
 
 
