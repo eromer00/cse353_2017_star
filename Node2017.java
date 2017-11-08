@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 
 public class Node2017 extends Thread {
@@ -10,6 +10,7 @@ public class Node2017 extends Thread {
     private int portnum;
     private int nodenum;
     //private Socket sock;
+    
 
     //read file, setup frame for all data to be sent (frame: [src][dest][size/ack][data])
     public Node2017(String filename, int portnum, int nodenum) {
@@ -45,7 +46,7 @@ public class Node2017 extends Thread {
 
         try {
             System.out.println("1");
-            Socket sock = new Socket("127.0.0.1", getPortNum());
+            Socket sock = new Socket(InetAddress.getLocalHost(), getPortNum());
 
             System.out.println("2");
             //NodeReceive b = new NodeReceive(this.sock);
