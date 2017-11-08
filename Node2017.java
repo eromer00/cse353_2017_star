@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.*;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class Node2017 extends Thread {
@@ -9,8 +9,8 @@ public class Node2017 extends Thread {
     ArrayList<String> outdata = new ArrayList<>();
     private int portnum;
     private int nodenum;
+    private Frame a; //to use frame in run, we should declare it here
     //private Socket sock;
-    
 
     //read file, setup frame for all data to be sent (frame: [src][dest][size/ack][data])
     public Node2017(String filename, int portnum, int nodenum) {
@@ -24,7 +24,7 @@ public class Node2017 extends Thread {
             while((s = br.readLine()) != null) {
                 String[] split = s.split(":");
 
-                Frame a = new Frame(nodenum, Integer.parseInt(split[0]), split[1]);
+                a = new Frame(nodenum, Integer.parseInt(split[0]), split[1]);
                 outdata.add(a.toBinaryString());
 
             }
@@ -46,7 +46,7 @@ public class Node2017 extends Thread {
 
         try {
             System.out.println("1");
-            Socket sock = new Socket(InetAddress.getLocalHost(), getPortNum());
+            Socket sock = new Socket("", getPortNum());
 
             System.out.println("2");
             //NodeReceive b = new NodeReceive(this.sock);
