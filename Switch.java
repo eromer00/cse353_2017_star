@@ -1,3 +1,10 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class Switch {
     public static int port = 50000;         //hand out ports at 50,000
     public int serverPort;                  //port for serverSocket
