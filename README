@@ -1,0 +1,37 @@
+Group Members:
+
+* Erik Romero
+* Erik Garcia
+* Steven Ramsey
+* Tyler Shellberg
+
+Compilation Instructions:
+
+//todo
+
+Files:
+
+Frame.java - Implements a custom frame format
+Node2017.java - Implements a generic node, which can be generated and connected to a switch.
+Switch.java - Implements a switch which can connect up to 255 nodes to allow for their communication, and buffers frames if needed. 
+README - Documentation for this project, including compilation instructions
+nodeTest.java - Temporary testing file for nodes
+
+Feature Checklist:
+
+Feature 																					| Status/Description 	| 
+---------------------------------------------------------------------------------------------------------------------
+Project Compiles and Builds without warnings or errors										| incomplete
+Switch class																				| incomplete
+Switch has a frame buffer, and read/writes appropriately									| incomplete
+Switch allows multiple connections															| incomplete
+Switch floods frame when it doesn't know the destination									| incomplete
+Switch learns destinations, and doesn't forward packet to any port except the one required	| incomplete
+Node class																					| incomplete
+Nodes instantiate, and open connection to the switch										| incomplete
+Nodes open their input files, and send data to switch										| incomplete
+Nodes open their output files, and save data that they recieved								| incomplete
+
+Known Bugs:
+
+//todo
