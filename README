@@ -7,6 +7,9 @@ Group Members:
 
 Compilation Instructions:
 
+Compilation can be done via the Makefile provided along with this assignment. Calling "make all" in the terminal when in a directory with the Makefile and source code present will perform the compilation.
+
+Execution Instructions:
 //todo
 
 Files:
