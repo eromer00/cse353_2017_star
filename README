@@ -22,20 +22,41 @@ nodeTest.java - Temporary testing file for nodes
 
 Feature Checklist:
 
-Feature 													| Status/Description 	| 
--------------------------------------------------------------------------------------
-Project Compiles and Builds without warnings or errors		| incomplete
-Switch class												| incomplete
-Switch has a frame buffer, and read/writes appropriately	| incomplete
-Switch allows multiple connections							| incomplete
-Switch floods frame when it doesn't know the destination	| incomplete
-Switch learns destinations, and doesn't forward 			| incomplete
-packet to any port except the one required					|				
-Node class													| incomplete
-Nodes instantiate, and open connection to the switch		| incomplete
-Nodes open their input files, and send data to switch		| incomplete
-Nodes open their output files, 								| incomplete
-and save data that they recieved							|
+Feature 						| Status/Description 	| 
+---------------------------------------------------------
+Project Compiles and Builds 	|	
+without warnings or errors		|
+								|
+Switch class					|
+								|
+Switch has a frame 				|
+buffer, and read/writes 		|
+appropriately					|
+								|
+Switch allows multiple 			|
+connections						|
+								|
+Switch floods frame when it 	|			
+doesn't know the destination	|
+								|
+Switch learns destinations, 	|
+and doesn't forward 			|
+packet to any port 				|
+except the one required			|			
+								|
+Node class						|						
+								|
+Nodes instantiate, 				|
+and open connection 			|
+to the switch					|
+								|
+Nodes open their 				|
+input files, and 				|
+send data to switch				|
+								|
+Nodes open their output 		|
+files, and save data 			|
+that they recieved				|		
 
 Known Bugs:
 
