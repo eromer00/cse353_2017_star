@@ -38,7 +38,7 @@ public class Switch implements Runnable{
      * @nodeNum is the port the switch should listen to
      */
     public static int Port(int node) {
-        lock.lock(); //the hell does this do? plz comment it.
+        lock.lock(); //help maintain thread synchronization
         int assignPortNum = 0;
         try {
             if (switchingTable == null) {
