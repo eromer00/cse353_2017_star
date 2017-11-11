@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Switch {
-    public static int port = 50000;         //hand out ports at 50,000
+    public static int port = 50000;         //hand out ports at 50,000 (I'm confused, since the Main class instantiates the nodes, shouldn't it be handing on their port numbers, not the switch class?)
     public int serverPort;                  //port for serverSocket
     public static int nodes = 0;
     public static ArrayList<Integer> switchingTable;
@@ -38,7 +38,7 @@ public class Switch {
      * @nodeNum is the port the switch should listen to
      */
     public static int Port(int node) {
-        lock.lock();
+        lock.lock(); //the hell does this do? plz comment it.
         int assignPortNum = 0;
         try {
             if (switchingTable == null) {
