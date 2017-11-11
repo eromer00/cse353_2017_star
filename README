@@ -10,15 +10,17 @@ Compilation Instructions:
 Compilation can be done via the Makefile provided along with this assignment. Calling "make all" in the terminal when in a directory with the Makefile and source code present will perform the compilation.
 
 Execution Instructions:
-//todo
+
+To execute, simply call "java Main" in the directory with the compiled .class files. 
 
 Files:
 
+Main.java - The main method of the project. Instantiates switches and nodes, as well as runs them. Also exists them all cleanly.
 Frame.java - Implements a custom frame format
 Node2017.java - Implements a generic node, which can be generated and connected to a switch.
 Switch.java - Implements a switch which can connect up to 255 nodes to allow for their communication, and buffers frames if needed. 
 README - Documentation for this project, including compilation instructions
-nodeTest.java - Temporary testing file for nodes
+Makefile - Build automation for this project
 
 Feature Checklist:
 

@@ -6,6 +6,9 @@ public class Main {
         //Instantiate a single switch (Will it end up needing to be a thread of its own?)
         Switch ourSwitch = new Switch(8080, num_nodes);
 
+        //Start up the switch (Note, according to pdf it must be a thread of its own)
+        ourSwitch.run();
+
         //Instantiate a number of nodes between 0 and 255 from the command line arguments
         for(int i = 1; i <= num_nodes; i++) {
             //Get the name of the file that node will open

@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Switch {
+public class Switch implements Runnable{
     public static int port = 50000;         //hand out ports at 50,000 (I'm confused, since the Main class instantiates the nodes, shouldn't it be handing on their port numbers, not the switch class?)
     public int serverPort;                  //port for serverSocket
     public static int nodes = 0;
@@ -57,25 +57,25 @@ public class Switch {
 
 
 
-    /* Need to implement
+     //Need to implement
 
     public void run() {
 
-    From Frame Class
+    /*From Frame Class
     Determines type of frame being constructed, used for creation/encryption frame
      * key:
      * 0 - regular data
      * 1 - ACK frame
      * 2 - flood frame
      * 3 - flood ACK frame
-     * 4 - bad frame (used for error checking)
+     * 4 - bad frame (used for error checking)*/
 
 
-    } */
+    }
 
 
     /*
-     * Establish a connection to the switch
+     * Establish a connection to the switch (Why do we need a thread here?)
      */
     class ListenerThread extends Thread {
         public int serverPort;
