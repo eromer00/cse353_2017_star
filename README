@@ -1,0 +1,65 @@
+Group Members:
+
+* Erik Romero
+* Erik Garcia
+* Steven Ramsey
+* Tyler Shellberg
+
+Compilation Instructions:
+
+Compilation can be done via the Makefile provided along with this assignment. Calling "make all" in the terminal when in a directory with the Makefile and source code present will perform the compilation.
+
+Execution Instructions:
+
+To execute, simply call "java Main" in the directory with the compiled .class files. 
+
+Files:
+
+Main.java - The main method of the project. Instantiates switches and nodes, as well as runs them. Also exists them all cleanly.
+Frame.java - Implements a custom frame format
+Node2017.java - Implements a generic node, which can be generated and connected to a switch.
+Switch.java - Implements a switch which can connect up to 255 nodes to allow for their communication, and buffers frames if needed. 
+README - Documentation for this project, including compilation instructions
+Makefile - Build automation for this project
+
+Feature Checklist:
+
+Feature 			| Status/Description 	| 
+---------------------------------------------------------
+Project Compiles and Builds 	|	
+without warnings or errors	|
+				|
+Switch class			|
+				|
+Switch has a frame 		|
+buffer, and read/writes 	|
+appropriately			|
+				|
+Switch allows multiple 		|
+connections			|
+				|
+Switch floods frame when it 	|			
+doesn't know the destination	|
+				|
+Switch learns destinations, 	|
+and doesn't forward 		|
+packet to any port 		|
+except the one required		|			
+				|
+Node class			|						
+				|
+Nodes instantiate, 		|
+and open connection 		|
+to the switch			|
+				|
+Nodes open their 		|
+input files, and 		|
+send data to switch		|
+				|
+Nodes open their output 	|
+files, and save data 		|
+that they recieved		|		
+
+Known Bugs:
+
+//todo
