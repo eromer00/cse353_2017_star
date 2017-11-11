@@ -2,6 +2,12 @@ public class Main {
     public static void main(String[] args) {
         //Get the number of nodes to be instantiated from the command line argument
         int num_nodes = Integer.parseInt(args[0]);
+        
+        //make sure num of nodes stays within defined range.
+        if(num_nodes < 2 || num_nodes > 255) {
+        	System.out.println("please define number of nodes such that 2 < num of nodes < 255");
+        	return;
+        }
 
         //Instantiate a single switch (Will it end up needing to be a thread of its own?)
         Switch ourSwitch = new Switch(8080, num_nodes);
