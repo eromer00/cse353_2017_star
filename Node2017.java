@@ -33,9 +33,9 @@ public class Node2017 extends Thread {
         	}
         	
         	FileWriter new_file = new FileWriter("./nodes/output/" + output_file.getName(), false);
-        	new_file.write("Hello World\n");
+
         	//BufferedWriter writer = new BufferedWriter(new_file);
-        	new_file.close();
+        	//new_file.close();
 
         }catch(Exception e) {
         	System.out.println("ERROR: " + e + "\ncouldn't make outputfile for node basically");
