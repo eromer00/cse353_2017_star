@@ -11,11 +11,9 @@ public class Node2017 extends Thread {
     public int switchport = 0;
     private int portnum;
     private int nodenum;
-    private Frame a; //to use frame in run, we should declare it herem just in case i'll leave this
-    int sleep_duration = 500; //ms --> 1/2 sec
+    private int sleep_duration = 500; //ms --> 1/2 sec
     //private Socket sock;
     
-    private PrintWriter pipe;
     File output_file;
 
     //read file, setup frame for all data to be sent (frame: [src][dest][size/ack][data])
@@ -53,7 +51,7 @@ public class Node2017 extends Thread {
             while((s = br.readLine()) != null) {
                 String[] split = s.split(":");
 
-                a = new Frame(nodenum, Integer.parseInt(split[0]), split[1]);
+                Frame a = new Frame(nodenum, Integer.parseInt(split[0]), split[1]);
                 outdata.add(a.toBinaryString());
 
             }
@@ -69,6 +67,14 @@ public class Node2017 extends Thread {
     public void run() {
     	
     	int numofelements = outdata.size(); //# of frames to send
+    	//remember this is global within this class
+    	
+    	SendToSwitch(numofelements); //send frames to switch and let it worry about where they go
+
+    }
+
+    private void SendToSwitch(int numofelements) {
+    	
     	PrintWriter pt;
     	String out_data;
     	
@@ -76,14 +82,15 @@ public class Node2017 extends Thread {
     		try {
     			Socket send_out;
     			
-    			send_out = new Socket(InetAddress.getLocalHost(), switchport);
+    			send_out = new Socket(InetAddress.getLocalHost(), switchport); //send things to the switch
     			
     			pt = new PrintWriter(send_out.getOutputStream(), true);
     			
     			for(int k = 0; k < numofelements; k++) {
     				out_data = outdata.get(k); //get our binary string, that is converted already
-    				System.out.println("Sent: " + out_data);
-    				pt.print(out_data);
+    				//Frame f = new Frame(out_data);
+    				//System.out.println("Sent: " + f.getData());
+    				pt.print(out_data); //the switch should handle dest, src, and stuff
     			}
     			
     			pt.close();
@@ -98,53 +105,7 @@ public class Node2017 extends Thread {
     		};
     		break;
     	}
-    	//System.out.println("Hello World!\n");
-    	
-    	//now the fun beings
-    	
-    	
-    	
-        /*
-        while(!outdata.isEmpty()) {
-            System.out.println(outdata.get(0));
-            outdata.remove(0);
-        }
-        */
-    	/*int length = outdata.size(); //prep for looping
-    	PrintWriter pipe;
-
-        try {
-            System.out.println("1");
-            System.out.println("PORT: " + getPortNum() + "\nNODE: " + getNodenum());
-            Socket sock = new Socket(InetAddress.getLocalHost(), getPortNum());
-            //this has to be handled by the switch?
-            
-            pipe = new PrintWriter(sock.getOutputStream(), true);
-            for(int i = 0; i < length; i++) {
-            	pipe.println(outdata.get(i));
-            }
-
-            System.out.println("2");
-            //NodeReceive b = new NodeReceive(this.sock);
-
-            System.out.println("3");
-            //NodeSend a = new NodeSend(outdata);
-
-            System.out.println("4");
-            //a.run();
-
-            System.out.println("5");
-            //b.run();
-
-            System.out.println("6");
-            sock.close();
-        } catch(IOException e) {
-            System.out.println("Error starting node: " + e);
-        }*/
-
     }
-
-
 
 
     private void setPortnum(int x) {
@@ -193,4 +154,6 @@ class NodeReceive extends Thread {
         }
     }
 
+    
+    
 }
