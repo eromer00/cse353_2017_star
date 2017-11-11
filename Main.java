@@ -38,7 +38,7 @@ public class Main {
             String fileName = "node" + String.valueOf(i);
 
             //Create the new node
-            Node2017 newNode = new Node2017(fileName, 50000+i, i);
+            Node2017 newNode = new Node2017(50000+i, i);
 
             //Run it
             newNode.run();
