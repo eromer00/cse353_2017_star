@@ -21,8 +21,12 @@ public class Main {
         //Instantiate a single switch (Will it end up needing to be a thread of its own?)
         Switch ourSwitch = new Switch(serverswitch, num_nodes);
 
+        //Construct a new Thread
+        Thread ourThread = new Thread(ourSwitch);
+
         //Start up the switch (Note, according to pdf it must be a thread of its own)
-        ourSwitch.run();
+        ourThread.start();
+
         //switch server port will be 50000
         System.out.println("it works");
         //THIS IS CURRENTLY EXPERIMENTAL
