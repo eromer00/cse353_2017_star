@@ -94,8 +94,8 @@ public class Node2017 extends Thread {
     						(new InputStreamReader(data_reciever.getInputStream())).readLine());
     				try {
     					//Allow for file appending
-    					File output = new File("./nodes/output/node" + fr.getDest() + "output.txt"); 
-    					FileWriter filewrite = new FileWriter("./nodes/output/" + output.getName(), true);
+    					File output = new File("../nodes/output/node" + fr.getDest() + "output.txt");
+    					FileWriter filewrite = new FileWriter("../nodes/output/" + output.getName(), true);
     					BufferedWriter writer = new BufferedWriter(filewrite);
     					
     					//Write the frame data built from binary string in the requested format
@@ -197,7 +197,7 @@ public class Node2017 extends Thread {
     	return nodenum; 
     }
     
-    private void TerminateNode() throws IOException {
+    public void TerminateNode() throws IOException {
     	server.close();
     	data_reciever.close();
     	Terminate = true;
