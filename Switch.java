@@ -1,11 +1,16 @@
+package networks.project2;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Switch {
+
+public class Switch extends Thread {
     public static int port = 50000;         //hand out ports at 50,000
     public int serverPort;                  //port for serverSocket
     public static int nodes = 0;
@@ -13,6 +18,7 @@ public class Switch {
     public static ArrayList<Frame> frames;
     public static Boolean terminate = false;
     public static int sleep = 100;
+    public static int processedFrames = 0;
     public static ReentrantLock lock = new ReentrantLock();
 
     /*
@@ -56,26 +62,71 @@ public class Switch {
     }
 
 
-
-    /* Need to implement
-
     public void run() {
+        System.out.println("Start");
 
-    From Frame Class
-    Determines type of frame being constructed, used for creation/encryption frame
-     * key:
-     * 0 - regular data
-     * 1 - ACK frame
-     * 2 - flood frame
-     * 3 - flood ACK frame
-     * 4 - bad frame (used for error checking)
+        ListenerThread listen = new ListenerThread(serverPort);
+        listen.start();
 
+        Frame frame = null;
 
-    } */
+        try {
+            for (;;) {
+                if (terminate) return;
+                if (frames.size() == 0) {
+                    System.out.println("Waiting to process frames.");
+                    Thread.sleep(sleep);
+                    continue;
+                }
+
+                frame = frames.get(frames.size() - 1);
+
+                if (switchingTable == null) {
+                    switchingTable = new ArrayList<Integer>();
+                    for (int i = 0; i < 256; i++) switchingTable.add(-1);
+                }
+
+                int nodePort = -1;
+
+                /*
+                ******* Need to handle the node port number, i.e. if location is not known ******
+                */
+                
+                System.out.println("Node " +frame.getDest()+ "connects to port " +nodePort+".");
+
+                Socket socket;
+                try {
+                    socket = new Socket("Localhost:", nodePort);
+                }catch (Throwable e) {
+                    Collections.swap(frames, 0, frames.size() - 1);
+                    System.out.println("Node " +frame.getDest()+ "failed to connect to port " +nodePort+".");
+                    Thread.sleep(sleep);
+                    continue;
+                }
+
+                System.out.println("Connection to node successful, now transmitting. ");
+
+                PrintWriter pipe = new PrintWriter(socket.getOutputStream(), true);
+                pipe.println(frame.toString());
+                pipe.close();
+                socket.close();
+                frames.remove(frame);
+                processedFrames++;
+                //Check to see how many frames have been processed
+                System.out.println(+processedFrames+ " frames processed so far");
+
+            }
+        } catch (Throwable e) {
+            System.out.println("Frame: " +frame);
+            System.out.println("Table: " +switchingTable);
+            System.out.println("Error:"+e.toString());
+        }
+
+    }
 
 
     /*
-     * Establish a connection to the switch
+     * Establish a connection
      */
     class ListenerThread extends Thread {
         public int serverPort;
