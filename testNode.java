@@ -1,14 +1,23 @@
-
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class testNode {
     public static void main(String[] args) {
-        Node2017 anode = new Node2017("nodea.txt", 20000, 1);
+        /* Node2017 anode = new Node2017("nodea.txt", 20000, 1);
         Node2017 bnode = new Node2017("nodeb.txt", 20001, 2);
-        Node2017 cnode = new Node2017("nodec.txt", 20002, 3);
+        Node2017 cnode = new Node2017("nodec.txt", 20002, 3); */
 
-        anode.run();
-        bnode.run();
-        cnode.run();
+        //anode.run();
+        //bnode.run();
+        //cnode.run();
+
+        Switch test = new Switch(50000, 20);
+        test.Port(5);
+        test.Port(2);
+
+        test.run();
+
+
 
         //test for github
 

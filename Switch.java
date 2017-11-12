@@ -1,5 +1,3 @@
-package networks.project2;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -61,7 +59,65 @@ public class Switch extends Thread {
         return assignPortNum;
     }
 
+    public void run() {
+        int i;
+        ArrayList<ListenerThread> servers = new ArrayList<>();
+        for(i = 1; i <= this.nodes; i++) {
+            servers.add(new ListenerThread(this.serverPort + i));
+        }
 
+        for(i = 0; i < servers.size(); i++) {
+            servers.get(i).run();
+        }
+
+        Frame frame = null;
+
+        try {
+            for (;;) {
+                if (terminate) return;
+                if (frames.size() == 0) {
+                    System.out.println("Waiting to process frames.");
+                    Thread.sleep(sleep);
+                    continue;
+                }
+
+                frame = frames.get(0);
+
+                if (switchingTable == null) {
+                    switchingTable = new ArrayList<Integer>();
+                    for (i = 0; i < 256; i++) switchingTable.add(-1);
+                }
+
+                int nodePort = -1;
+                if(switchingTable.get(frame.getDest()) != -1) nodePort = switchingTable.get(frame.getDest());
+
+
+                //Need to handle the node port number, i.e. if location is not known
+
+                System.out.println("Node " +frame.getDest()+ "connects to port " +nodePort+".");
+                for(i = 0; i < servers.size(); i++) {
+                    if(servers.get(i).getServerPort() == nodePort) {
+                        Socket tmp = servers.get(i).getSocket();
+                        PrintWriter pw = new PrintWriter(tmp.getOutputStream());
+                        pw.println(frame.toBinaryString());
+                        frames.remove(0);
+                        processedFrames++;
+                        //Check to see how many frames have been processed
+                        System.out.println(+processedFrames+ " frames processed so far");
+                        pw.close();
+                    }
+                }
+
+
+
+            }
+        } catch (Throwable e) {
+            System.out.println("Frame: " +frame);
+            System.out.println("Table: " +switchingTable);
+            System.out.println("Error:"+e.toString());
+        }
+    }
+    /*
     public void run() {
         System.out.println("Start");
 
@@ -88,10 +144,11 @@ public class Switch extends Thread {
 
                 int nodePort = -1;
 
-                /*
-                ******* Need to handle the node port number, i.e. if location is not known ******
+
+                //Need to handle the node port number, i.e. if location is not known
+
                 */
-                
+                /*
                 System.out.println("Node " +frame.getDest()+ "connects to port " +nodePort+".");
 
                 Socket socket;
@@ -123,22 +180,35 @@ public class Switch extends Thread {
         }
 
     }
-
+    */
 
     /*
      * Establish a connection
      */
     class ListenerThread extends Thread {
-        public int serverPort;
+        private int serverPort;
+        private Socket socket;
+        private boolean done = false;
 
         public ListenerThread(int serverPort) {
             this.serverPort = serverPort;
         }
 
+        public Socket getSocket() {
+            return this.socket;
+        }
+
+        public int getServerPort() {
+            return this.serverPort;
+        }
+
+        public boolean isDone() {
+            return this.done;
+        }
+
         public void run() {
             try {
-                System.out.println("Running");
-                Socket socket;
+                System.out.println("Running with port " + this.serverPort);
                 ServerSocket listener = new ServerSocket(serverPort);
 
                 for (;;) {
@@ -152,8 +222,13 @@ public class Switch extends Thread {
                     );
 
                     for (;;) {
+                        if(this.done = true) continue;
+
                         String data = input.readLine();
-                        if (data.equals("terminate")) break;
+                        if (data.equals("terminate")) {
+                            this.done = true;
+                            continue;
+                        }
 
                         Frame frame = new Frame(data);
                         Switch.frames.add(frame);
