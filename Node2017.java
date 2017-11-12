@@ -238,7 +238,7 @@ class NodeReceive implements Runnable {
 		BufferedReader br = null;
 		try {
 			data_reciever = new Socket("127.0.0.1", portnum);
-			System.out.println("NODE: " + nodenum + "accepted on port: " + portnum);
+			System.out.println("NODE #" + nodenum + " accepted on port: " + portnum);
 			br = new BufferedReader(new InputStreamReader(data_reciever.getInputStream()));
 		} catch(Exception e) {}
 		
@@ -253,7 +253,7 @@ class NodeReceive implements Runnable {
     				Frame fr = new Frame(new BufferedReader
     						(new InputStreamReader(data_reciever.getInputStream())).readLine());
     				*/
-						System.out.println("a");
+						//System.out.println("a");
 						String x = br.readLine();
 						Frame fr = new Frame(x);
 
