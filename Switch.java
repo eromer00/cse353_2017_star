@@ -231,6 +231,22 @@ public class Switch extends Thread {
                         }
 
                         Frame frame = new Frame(data);
+
+                        boolean inTable = false;
+                        if(Switch.switchingTable != null) {
+                            for (int i = 0; i < Switch.switchingTable.size(); i++) {
+                                if (Switch.switchingTable.get(frame.getSrc()) != -1) {
+                                    inTable = true;
+                                    break;
+                                }
+                            }
+                            if (!inTable) {
+                                Switch.Port(frame.getSrc());
+                                PrintWriter pw = new PrintWriter(socket.getOutputStream());
+                                pw.println(new Frame(5, 0, String.valueOf(Switch.switchingTable.get(frame.getSrc()))).toBinaryString());
+                                pw.close();
+                            }
+                        }
                         Switch.frames.add(frame);
                     }
                 }
