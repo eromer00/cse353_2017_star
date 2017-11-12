@@ -26,33 +26,42 @@ public class Main {
         ourThread.start();
 
         //switch server port will be 50000
-        System.out.println("it works");
+        //System.out.println("it works");
 
         //populate the list with node objects to keep organization
         ArrayList<Node2017> nodegroup = new ArrayList<Node2017>();
         i = 1;
         while(i <= num_nodes) {
-        	System.out.println("YAS\n");
+        	//System.out.println("YAS\n");
+
+            Node2017 newNode = new Node2017(50000, i, serverswitch);
+
             //You do in fact need the .txt, it's in the PDF very clearly. Also, worked fine when I re-added the .txt in my copy.
-        	nodegroup.add(new Node2017(50000, i, serverswitch));
-        	i++;
+        	nodegroup.add(newNode);
 
-        }
-
+<<<<<<< HEAD
         //Instantiate a number of nodes between 0 and 255 from the command line arguments
         for(int i1 = 0; i1 < num_nodes; i1++) {
+=======
+>>>>>>> 241a5af839f3fdfee2372d9d168364a9e3acf67d
             //Construct a new Thread for each node
-            Thread nodeThread = new Thread(nodegroup.get(i1));
+            Thread nodeThread = new Thread(newNode);
 
             //Start up the switch (Note, according to pdf it must be a thread of its own)
             nodeThread.start();
+
+        	i++;
         }
 
         //When all nodes are done, shut them all down
         
         //Call Terminate_Node for each node
+<<<<<<< HEAD
         /*
         for(int i2 = 1; i2 <= num_nodes; i2++) {
+=======
+        /*for(int i2 = 1; i2 <= num_nodes; i2++) {
+>>>>>>> 241a5af839f3fdfee2372d9d168364a9e3acf67d
             try {
 
                 //nodegroup.get(i2).TerminateNode();
@@ -62,6 +71,6 @@ public class Main {
         } */
 
         //Terminate the switch
-        ourSwitch.close();
+        ourSwitch.close();*/
     }
 }
