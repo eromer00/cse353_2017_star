@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
         //Get the number of nodes to be instantiated from the command line argument
         //int num_nodes = Integer.parseInt(args[0]);
-        int num_nodes = 2; //hardcoded for now
+        int num_nodes = 25; //hardcoded for now
         //Preparation for node management
         int i = 1, serverswitch = 49500;
         
@@ -29,26 +29,28 @@ public class Main {
         //}
         
         //Instantiate a single switch (Will it end up needing to be a thread of its own?)
-        Switch ourSwitch = new Switch(8080, num_nodes);
+        Switch ourSwitch = new Switch(serverswitch, num_nodes);
 
         //Start up the switch (Note, according to pdf it must be a thread of its own)
         ourSwitch.run();
 
         //I"M TRYING TO WORK WITH THIS
         //Instantiate a number of nodes between 0 and 255 from the command line arguments
-        for(int j = 1; i <= num_nodes; i++) {
+        for(int i1 = 1; i1 <= num_nodes; i1++) {
             //Get the name of the file that node will open
-            String fileName = "node" + String.valueOf(i);
+            String fileName = "node" + String.valueOf(i1);
 
             //Create the new node
-            Node2017 newNode = new Node2017(50000+i, i);
+            Node2017 newNode = new Node2017(50000+i1, i1, serverswitch);
 
             //Run it
             newNode.run();
         }
 
         //When all nodes are done, shut them all down
-
+        
+        //Call Terminate_Node for each node
+        
         //Terminate the switch
     }
 }

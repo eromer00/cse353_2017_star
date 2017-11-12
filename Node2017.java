@@ -15,6 +15,9 @@ public class Node2017 extends Thread {
     private int sleep_duration = 500; //ms --> 1/2 sec
     private int portnumber = 0;
     
+    ServerSocket server;
+    Socket data_reciever;
+    
     public boolean Sending_Done = false;
     public boolean Terminate = false;
     
@@ -64,10 +67,10 @@ public class Node2017 extends Thread {
 
     public void run() {
     	
+    	//this all runs in a loop from main
     	int numofelements = outdata.size(); //# of frames to send
     	//remember this is outdata is global within this class
-    	ServerSocket server;
-
+    	
     	SendToSwitch(numofelements); //send frames to switch and let it worry about where they go
     	System.out.println("SENDTOSWITCH Done");
     	server = AssignPort(); //get a port from the switch, also inform that this node is done sending
@@ -77,9 +80,7 @@ public class Node2017 extends Thread {
     }
     
     private void Recieve_Write(ServerSocket server) {
-    	
-    	Socket data_reciever;
-    	
+ 
     	//keep going until done
     	while(true) {
     		if(Terminate) {
@@ -101,6 +102,7 @@ public class Node2017 extends Thread {
     					writer.write(fr.getSrc() + ":" + fr.getData() + "\n");
     					
     					writer.close();
+    					filewrite.close();
     					
     					System.out.println("Complete Write: node" + fr.getDest() + "output.txt");
 
@@ -194,41 +196,10 @@ public class Node2017 extends Thread {
     public int getNodenum() { 
     	return nodenum; 
     }
-}
-
-class NodeSend extends Thread {
-
-    private ArrayList<String> frames;
-
-    public NodeSend(ArrayList<String> x) {
-        this.frames = x;
-    }
-
-    @Override
-    public void run() {
-
-    }
-}
-
-class NodeReceive extends Thread {
-
-    Socket sock;
-
-    public NodeReceive(Socket sck) {
-        this.sock = sck;
-    }
-
-    @Override
-    public void run() {
-        try {
-            //placeholder
-            int i = 0;
-            sleep(1000);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     
-    
-}
+    private void TerminateNode() throws IOException {
+    	server.close();
+    	data_reciever.close();
+    	Terminate = true;
+    }
+} 
