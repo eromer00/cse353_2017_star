@@ -61,6 +61,25 @@ public class Switch implements Runnable {
     }
 
     public void run() {
+        try {
+            ServerSocket ss = new ServerSocket(serverPort);
+            Socket sock = ss.accept();
+            BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            PrintWriter pw = new PrintWriter(sock.getOutputStream());
+            for(;;) {
+                String line = br.readLine();
+                if(line == "terminate") {
+                    break;
+                }
+                else if(line != null) {
+                    pw.print(line);
+                }
+            }
+        }catch(Exception e) {
+        }
+    }
+    /*
+    public void run() {
 
 
         int i;
@@ -122,6 +141,10 @@ public class Switch implements Runnable {
             System.out.println("Error:"+e.toString());
         }
     }
+    */
+
+
+
     /*
     public void run() {
         System.out.println("Start");

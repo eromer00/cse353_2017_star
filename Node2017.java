@@ -235,24 +235,24 @@ class NodeReceive implements Runnable {
 	}
 
 	public void run() {
-
+		BufferedReader br = null;
+		try {
+			data_reciever = new Socket("127.0.0.1", portnum);
+			System.out.println("NODE: " + nodenum + "accepted on port: " + portnum);
+			br = new BufferedReader(new InputStreamReader(data_reciever.getInputStream()));
+		} catch(Exception e) {}
+		
 		//keep going until done
 		while(true) {
 			if(Node2017.Terminate) {
 				return;
 			}
 			else {
-				try {
-					data_reciever = new Socket("127.0.0.1", portnum);
-					System.out.println("NODE: " + nodenum + "accepted on port: " + portnum);
-					BufferedReader br = new BufferedReader(new InputStreamReader(data_reciever.getInputStream()));
-
+					try {
     				/*
     				Frame fr = new Frame(new BufferedReader
     						(new InputStreamReader(data_reciever.getInputStream())).readLine());
     				*/
-
-					try {
 						System.out.println("a");
 						String x = br.readLine();
 						Frame fr = new Frame(x);
@@ -261,12 +261,12 @@ class NodeReceive implements Runnable {
 						//Allow for file appending
 						File output = new File("../nodes/output/node" + fr.getDest() + "output.txt");
 						FileWriter filewrite = new FileWriter("../nodes/output/" + output.getName(), true);
-
+					/*
 						if(fr.getDest() == 0) {
 							System.out.println("flooded");
 							//flood frame, reset socket
 							portnum = Integer.parseInt(fr.getData());
-						} else {
+						} else { */
 							BufferedWriter writer = new BufferedWriter(filewrite);
 
 							//Write the frame data built from binary string in the requested format
@@ -276,24 +276,12 @@ class NodeReceive implements Runnable {
 							filewrite.close();
 
 							System.out.println("Complete Write: node" + fr.getDest() + "output.txt");
-						}
+						//}
 					}catch(Exception x) {
 						System.out.println("ERROR: " + x);
 					}
 
-				}catch (Throwable e){
-					if(Node2017.Terminate) {
-						return;
-					}
-					else {
-						System.out.println("Waiting on Switch...\n");
-						try {
-							Thread.sleep(Node2017.sleep_duration);
-						}catch(InterruptedException err){
-
-						}
-					}
-				}
+				
 			}
 
 		}
