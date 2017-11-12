@@ -9,7 +9,6 @@ public class Main {
         //int num_nodes = 25; //hardcoded for now
         //Preparation for node management
         int i = 1, serverswitch = 50000;
-        
 
 
 
@@ -18,24 +17,26 @@ public class Main {
         	System.out.println("please define number of nodes such that 2 < num of nodes < 255");
         	return;
         }
-        //switch server port will be 50000
-        
-        //THIS IS CURRENTLY EXPERIMENTAL
-        //populate the list with node objects to keep organization
-        ArrayList<Node2017> nodegroup = new ArrayList<Node2017>();
-        while(i <= num_nodes) {
-        	System.out.println("YAS\n");
-            //You do in fact need the .txt, it's in the PDF very clearly. Also, worked fine when I re-added the .txt in my copy.
-        	nodegroup.add(new Node2017(50000+i, i, serverswitch));
-        	i++;
-
-        }
 
         //Instantiate a single switch (Will it end up needing to be a thread of its own?)
         Switch ourSwitch = new Switch(serverswitch, num_nodes);
 
         //Start up the switch (Note, according to pdf it must be a thread of its own)
         ourSwitch.run();
+        //switch server port will be 50000
+        System.out.println("it works");
+        //THIS IS CURRENTLY EXPERIMENTAL
+        //populate the list with node objects to keep organization
+        ArrayList<Node2017> nodegroup = new ArrayList<Node2017>();
+        while(i <= num_nodes) {
+        	System.out.println("YAS\n");
+            //You do in fact need the .txt, it's in the PDF very clearly. Also, worked fine when I re-added the .txt in my copy.
+        	nodegroup.add(new Node2017(50000, i, serverswitch));
+        	i++;
+
+        }
+
+
 
         //I"M TRYING TO WORK WITH THIS
         //Instantiate a number of nodes between 0 and 255 from the command line arguments

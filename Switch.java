@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class Switch extends Thread {
+public class Switch implements Runnable {
     public static int port = 50000;         //hand out ports at 50,000
     public int serverPort;                  //port for serverSocket
     public static int nodes = 0;
@@ -62,7 +62,7 @@ public class Switch extends Thread {
     public void run() {
         int i;
         ArrayList<ListenerThread> servers = new ArrayList<>();
-        for(i = 1; i <= this.nodes; i++) {
+        for(i = 0; i <= this.nodes; i++) {
             servers.add(new ListenerThread(this.serverPort + i));
         }
 
@@ -72,6 +72,7 @@ public class Switch extends Thread {
 
         Frame frame = null;
 
+        System.out.println("test a");
         try {
             for (;;) {
                 if (terminate) return;
@@ -214,6 +215,7 @@ public class Switch extends Thread {
                 for (;;) {
                     if (Switch.terminate) return;
                     System.out.println("Trying to establish a connection.");
+                    Thread.sleep(10000);
                     socket = listener.accept();
 
                     System.out.println("Connection established.");
