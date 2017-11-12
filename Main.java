@@ -11,9 +11,9 @@ public class Main {
         int i = 1, serverswitch = 50000;
 
         //make sure num of nodes stays within defined range.
-        if(num_nodes < 2 || num_nodes > 255) {
-        	System.out.println("please define number of nodes such that 2 < num of nodes < 255");
-        	return;
+        if (num_nodes < 2 || num_nodes > 255) {
+            System.out.println("please define number of nodes such that 2 < num of nodes < 255");
+            return;
         }
 
         //Instantiate a single switch (Will it end up needing to be a thread of its own?)
@@ -31,32 +31,28 @@ public class Main {
         //populate the list with node objects to keep organization
         ArrayList<Node2017> nodegroup = new ArrayList<Node2017>();
         i = 1;
-        while(i <= num_nodes) {
-        	//System.out.println("YAS\n");
+        while (i <= num_nodes) {
+            //System.out.println("YAS\n");
 
             Node2017 newNode = new Node2017(50000, i, serverswitch);
 
             //You do in fact need the .txt, it's in the PDF very clearly. Also, worked fine when I re-added the .txt in my copy.
-        	nodegroup.add(newNode);
+            nodegroup.add(newNode);
 
-<<<<<<< HEAD
-        //Instantiate a number of nodes between 0 and 255 from the command line arguments
-        for(int i1 = 0; i1 < num_nodes; i1++) {
-=======
->>>>>>> 241a5af839f3fdfee2372d9d168364a9e3acf67d
-            //Construct a new Thread for each node
-            Thread nodeThread = new Thread(newNode);
+            //Instantiate a number of nodes between 0 and 255 from the command line arguments
+            for (int i1 = 0; i1 < num_nodes; i1++) {
+                //Construct a new Thread for each node
+                Thread nodeThread = new Thread(newNode);
 
-            //Start up the switch (Note, according to pdf it must be a thread of its own)
-            nodeThread.start();
+                //Start up the switch (Note, according to pdf it must be a thread of its own)
+                nodeThread.start();
 
-        	i++;
-        }
+                i++;
+            }
 
-        //When all nodes are done, shut them all down
-        
-        //Call Terminate_Node for each node
-<<<<<<< HEAD
+            //When all nodes are done, shut them all down
+
+            //Call Terminate_Node for each node
         /*
         for(int i2 = 1; i2 <= num_nodes; i2++) {
 =======
@@ -70,7 +66,8 @@ public class Main {
             }
         } */
 
-        //Terminate the switch
-        ourSwitch.close();*/
+            //Terminate the switch
+            ourSwitch.close();
+        }
     }
 }
