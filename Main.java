@@ -26,13 +26,13 @@ public class Main {
         ourThread.start();
 
         //switch server port will be 50000
-        System.out.println("it works");
+        //System.out.println("it works");
 
         //populate the list with node objects to keep organization
         ArrayList<Node2017> nodegroup = new ArrayList<Node2017>();
         i = 1;
         while(i <= num_nodes) {
-        	System.out.println("YAS\n");
+        	//System.out.println("YAS\n");
 
             Node2017 newNode = new Node2017(50000, i, serverswitch);
 

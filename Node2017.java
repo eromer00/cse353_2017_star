@@ -99,7 +99,7 @@ public class Node2017 extends Thread {
     				*/
 
     				try {
-						System.out.println("a");
+						//System.out.println("a");
 						String x = br.readLine();
 						Frame fr = new Frame(x);
 
