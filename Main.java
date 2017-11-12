@@ -33,25 +33,25 @@ public class Main {
         i = 1;
         while(i <= num_nodes) {
         	System.out.println("YAS\n");
+
+            Node2017 newNode = new Node2017(50000, i, serverswitch);
+
             //You do in fact need the .txt, it's in the PDF very clearly. Also, worked fine when I re-added the .txt in my copy.
-        	nodegroup.add(new Node2017(50000, i, serverswitch));
-        	i++;
+        	nodegroup.add(newNode);
 
-        }
-
-        //Instantiate a number of nodes between 0 and 255 from the command line arguments
-        for(int i1 = 1; i1 <= num_nodes; i1++) {
             //Construct a new Thread for each node
-            Thread nodeThread = new Thread(nodegroup.get(i1));
+            Thread nodeThread = new Thread(newNode);
 
             //Start up the switch (Note, according to pdf it must be a thread of its own)
             nodeThread.start();
+
+        	i++;
         }
 
         //When all nodes are done, shut them all down
         
         //Call Terminate_Node for each node
-        for(int i2 = 1; i2 <= num_nodes; i2++) {
+        /*for(int i2 = 1; i2 <= num_nodes; i2++) {
             try {
                 nodegroup.get(i2).TerminateNode();
             } catch (IOException e) {
@@ -59,6 +59,6 @@ public class Main {
             }
         }
         //Terminate the switch
-        ourSwitch.close();
+        ourSwitch.close();*/
     }
 }
