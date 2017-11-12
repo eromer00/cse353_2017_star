@@ -40,7 +40,7 @@ public class Main {
         }
 
         //Instantiate a number of nodes between 0 and 255 from the command line arguments
-        for(int i1 = 1; i1 <= num_nodes; i1++) {
+        for(int i1 = 0; i1 < num_nodes; i1++) {
             //Construct a new Thread for each node
             Thread nodeThread = new Thread(nodegroup.get(i1));
 
@@ -51,13 +51,16 @@ public class Main {
         //When all nodes are done, shut them all down
         
         //Call Terminate_Node for each node
+        /*
         for(int i2 = 1; i2 <= num_nodes; i2++) {
             try {
-                nodegroup.get(i2).TerminateNode();
+
+                //nodegroup.get(i2).TerminateNode();
             } catch (IOException e) {
                 System.out.println("didn't terminate node");
             }
-        }
+        } */
+
         //Terminate the switch
         ourSwitch.close();
     }

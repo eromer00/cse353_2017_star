@@ -12,14 +12,14 @@ public class Node2017 extends Thread {
     public int switchport = 0;
     private int portnum = 0;
     private int nodenum = 0;
-    private int sleep_duration = 500; //ms --> 1/2 sec
+    public static int sleep_duration = 500; //ms --> 1/2 sec
     private int portnumber = 0;
     public boolean floodReceived = false;
 
     Socket data_reciever;
     
     public boolean Sending_Done = false;
-    public boolean Terminate = false;
+    public static boolean Terminate = false;
     
     File output_file;
 
@@ -71,15 +71,20 @@ public class Node2017 extends Thread {
     	int numofelements = outdata.size(); //# of frames to send
     	//remember this is outdata is global within this class
 
-		Recieve_Write(data_reciever); //Now the node can receive and write the data to the corresponding file
+		//Recieve_Write(data_reciever); //Now the node can receive and write the data to the corresponding file
+		NodeReceive rw = new NodeReceive(portnum, nodenum);
+		Thread read = new Thread(rw);
+		read.start();
 		System.out.println("RECIEVE_WRITE Done");
-    	SendToSwitch(numofelements); //send frames to switch and let it worry about where they go
-    	System.out.println("SENDTOSWITCH Done");
+		NodeSend ns = new NodeSend(numofelements, switchport, outdata);
+    	Thread send = new Thread(ns); //send frames to switch and let it worry about where they go
+    	send.run();
+		System.out.println("SENDTOSWITCH Done");
     	//server = AssignPort(); //get a port from the switch, also inform that this node is done sending
     	System.out.println("ASSIGNPORT Done");
 
     }
-    
+    /*
     private void Recieve_Write(Socket sockout) {
  
     	//keep going until done
@@ -93,10 +98,6 @@ public class Node2017 extends Thread {
     				System.out.println("NODE: " + nodenum + "accepted on port: " + portnum);
     				BufferedReader br = new BufferedReader(new InputStreamReader(data_reciever.getInputStream()));
 
-    				/*
-    				Frame fr = new Frame(new BufferedReader
-    						(new InputStreamReader(data_reciever.getInputStream())).readLine());
-    				*/
 
     				try {
 						System.out.println("a");
@@ -144,6 +145,7 @@ public class Node2017 extends Thread {
     		
     	}
     }
+    */
     
     private ServerSocket AssignPort() {
     	
@@ -161,7 +163,7 @@ public class Node2017 extends Thread {
     	}   	
 		return server;
     }
-
+	/*
 
     private void SendToSwitch(int numofelements) {
     	
@@ -197,7 +199,7 @@ public class Node2017 extends Thread {
     		break;
     	}
     }
-
+	*/
     private void setPortnum(int x) {
         this.portnum = x;
     }
@@ -219,4 +221,124 @@ public class Node2017 extends Thread {
     	data_reciever.close();
     	Terminate = true;
     }
-} 
+
+
+
+}
+
+class NodeReceive implements Runnable {
+	public Socket data_reciever;
+	public int portnum, nodenum;
+	public NodeReceive(int portnum, int nodenum) {
+		this.portnum = portnum;
+		this.nodenum = nodenum;
+	}
+
+	public void run() {
+
+		//keep going until done
+		while(true) {
+			if(Node2017.Terminate) {
+				return;
+			}
+			else {
+				try {
+					data_reciever = new Socket("127.0.0.1", portnum);
+					System.out.println("NODE: " + nodenum + "accepted on port: " + portnum);
+					BufferedReader br = new BufferedReader(new InputStreamReader(data_reciever.getInputStream()));
+
+    				/*
+    				Frame fr = new Frame(new BufferedReader
+    						(new InputStreamReader(data_reciever.getInputStream())).readLine());
+    				*/
+
+					try {
+						System.out.println("a");
+						String x = br.readLine();
+						Frame fr = new Frame(x);
+
+						System.out.println("found frame: " + x);
+						//Allow for file appending
+						File output = new File("../nodes/output/node" + fr.getDest() + "output.txt");
+						FileWriter filewrite = new FileWriter("../nodes/output/" + output.getName(), true);
+
+						if(fr.getDest() == 0) {
+							System.out.println("flooded");
+							//flood frame, reset socket
+							portnum = Integer.parseInt(fr.getData());
+						} else {
+							BufferedWriter writer = new BufferedWriter(filewrite);
+
+							//Write the frame data built from binary string in the requested format
+							writer.write(fr.getSrc() + ":" + fr.getData() + "\n");
+
+							writer.close();
+							filewrite.close();
+
+							System.out.println("Complete Write: node" + fr.getDest() + "output.txt");
+						}
+					}catch(Exception x) {
+						System.out.println("ERROR: " + x);
+					}
+
+				}catch (Throwable e){
+					if(Node2017.Terminate) {
+						return;
+					}
+					else {
+						System.out.println("Waiting on Switch...\n");
+						try {
+							Thread.sleep(Node2017.sleep_duration);
+						}catch(InterruptedException err){
+
+						}
+					}
+				}
+			}
+
+		}
+	}
+}
+
+class NodeSend implements Runnable {
+	public int numofelements;
+	public int port;
+	public ArrayList<String> data;
+	public NodeSend(int num, int switchport, ArrayList<String> outdata) {
+		this.numofelements = num;
+		this.port = switchport;
+		this.data = outdata;
+	}
+
+	public void run() {
+
+		PrintWriter pt;
+		String out_data;
+
+			try {
+				Socket send_out;
+
+				send_out = new Socket(InetAddress.getLocalHost(), port); //send things to the switch
+
+				pt = new PrintWriter(send_out.getOutputStream(), true);
+
+				for(int k = 0; k < numofelements; k++) {
+					out_data = data.get(k); //get our binary string frame, that is converted already
+					//Frame f = new Frame(out_data);
+					//System.out.println("Sent: " + f.getData());
+					pt.print(out_data); //the switch should handle dest, src, and stuff
+				}
+				pt.print("terminate");
+				pt.close();
+				send_out.close();
+
+			}catch(Throwable e) {
+				try {
+					System.out.println("Waiting on the switch...");
+					Thread.sleep(Node2017.sleep_duration);
+				}catch(InterruptedException err){
+					System.out.println("error waiting for switch");
+				}
+			}
+	}
+}

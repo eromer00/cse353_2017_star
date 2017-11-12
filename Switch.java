@@ -73,20 +73,6 @@ public class Switch implements Runnable {
             servers.get(i).run();
         }
 
-        for(;;) {
-            int count = 0;
-            try {
-                Socket flood = servers.get(0).getSocket();
-                PrintWriter pw = new PrintWriter(flood.getOutputStream());
-                pw.println(new Frame(5, 0, "flood string").toBinaryString());
-                Thread.sleep(100);
-                count++;
-
-                if(count > 10) break;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
         Frame frame = null;
 
