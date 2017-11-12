@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -9,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 public class Switch implements Runnable {
-    public static int port = 50000;         //hand out ports at 50,000
+    public static int port = 50001;         //hand out ports at 50,000
     public int serverPort;                  //port for serverSocket
     public static int nodes = 0;
     public static ArrayList<Integer> switchingTable;
@@ -60,6 +61,8 @@ public class Switch implements Runnable {
     }
 
     public void run() {
+
+
         int i;
         ArrayList<ListenerThread> servers = new ArrayList<>();
         for(i = 0; i <= this.nodes; i++) {
@@ -68,6 +71,21 @@ public class Switch implements Runnable {
 
         for(i = 0; i < servers.size(); i++) {
             servers.get(i).run();
+        }
+
+        for(;;) {
+            int count = 0;
+            try {
+                Socket flood = servers.get(0).getSocket();
+                PrintWriter pw = new PrintWriter(flood.getOutputStream());
+                pw.println(new Frame(5, 0, "flood string").toBinaryString());
+                Thread.sleep(100);
+                count++;
+
+                if(count > 10) break;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         Frame frame = null;
@@ -215,7 +233,6 @@ public class Switch implements Runnable {
                 for (;;) {
                     if (Switch.terminate) return;
                     System.out.println("Trying to establish a connection.");
-                    Thread.sleep(10000);
                     socket = listener.accept();
 
                     System.out.println("Connection established.");

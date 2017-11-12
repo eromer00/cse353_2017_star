@@ -14,8 +14,8 @@ public class Node2017 extends Thread {
     private int nodenum = 0;
     private int sleep_duration = 500; //ms --> 1/2 sec
     private int portnumber = 0;
-    
-    ServerSocket server;
+    public boolean floodReceived = false;
+
     Socket data_reciever;
     
     public boolean Sending_Done = false;
@@ -70,16 +70,17 @@ public class Node2017 extends Thread {
     	//this all runs in a loop from main
     	int numofelements = outdata.size(); //# of frames to send
     	//remember this is outdata is global within this class
-    	
+
+		Recieve_Write(data_reciever); //Now the node can receive and write the data to the corresponding file
+		System.out.println("RECIEVE_WRITE Done");
     	SendToSwitch(numofelements); //send frames to switch and let it worry about where they go
     	System.out.println("SENDTOSWITCH Done");
-    	server = AssignPort(); //get a port from the switch, also inform that this node is done sending
+    	//server = AssignPort(); //get a port from the switch, also inform that this node is done sending
     	System.out.println("ASSIGNPORT Done");
-    	Recieve_Write(server); //Now the node can receive and write the data to the corresponding file
-    	System.out.println("RECIEVE_WRITE Done");
+
     }
     
-    private void Recieve_Write(ServerSocket server) {
+    private void Recieve_Write(Socket sockout) {
  
     	//keep going until done
     	while(true) {
@@ -88,24 +89,40 @@ public class Node2017 extends Thread {
     		}
     		else {
     			try {
-    				data_reciever = server.accept();
-    				System.out.println("NODE: " + nodenum + "accepted on port: " + portnumber);
+    				data_reciever = new Socket("127.0.0.1", portnum);
+    				System.out.println("NODE: " + nodenum + "accepted on port: " + portnum);
+    				BufferedReader br = new BufferedReader(new InputStreamReader(data_reciever.getInputStream()));
+
+    				/*
     				Frame fr = new Frame(new BufferedReader
     						(new InputStreamReader(data_reciever.getInputStream())).readLine());
+    				*/
+
     				try {
+						System.out.println("a");
+						String x = br.readLine();
+						Frame fr = new Frame(x);
+
+						System.out.println("found frame: " + x);
     					//Allow for file appending
     					File output = new File("../nodes/output/node" + fr.getDest() + "output.txt");
     					FileWriter filewrite = new FileWriter("../nodes/output/" + output.getName(), true);
-    					BufferedWriter writer = new BufferedWriter(filewrite);
-    					
-    					//Write the frame data built from binary string in the requested format
-    					writer.write(fr.getSrc() + ":" + fr.getData() + "\n");
-    					
-    					writer.close();
-    					filewrite.close();
-    					
-    					System.out.println("Complete Write: node" + fr.getDest() + "output.txt");
 
+    					if(fr.getDest() == 0) {
+    						System.out.println("flooded");
+    						//flood frame, reset socket
+							portnum = Integer.parseInt(fr.getData());
+						} else {
+							BufferedWriter writer = new BufferedWriter(filewrite);
+
+							//Write the frame data built from binary string in the requested format
+							writer.write(fr.getSrc() + ":" + fr.getData() + "\n");
+
+							writer.close();
+							filewrite.close();
+
+							System.out.println("Complete Write: node" + fr.getDest() + "output.txt");
+						}
     				}catch(Exception x) {
     					System.out.println("ERROR: " + x);
     				}
@@ -198,7 +215,7 @@ public class Node2017 extends Thread {
     }
     
     public void TerminateNode() throws IOException {
-    	server.close();
+    	//server.close();
     	data_reciever.close();
     	Terminate = true;
     }

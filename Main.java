@@ -32,6 +32,7 @@ public class Main {
         //THIS IS CURRENTLY EXPERIMENTAL
         //populate the list with node objects to keep organization
         ArrayList<Node2017> nodegroup = new ArrayList<Node2017>();
+        i = 1;
         while(i <= num_nodes) {
         	System.out.println("YAS\n");
             //You do in fact need the .txt, it's in the PDF very clearly. Also, worked fine when I re-added the .txt in my copy.
