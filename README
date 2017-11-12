@@ -10,53 +10,43 @@ Compilation Instructions:
 Compilation can be done via the Makefile provided along with this assignment. Calling "make all" in the terminal when in a directory with the Makefile and source code present will perform the compilation.
 
 Execution Instructions:
-//todo
+
+Simply called "java Main" in the directory with the compiled .class files for this project.
 
 Files:
 
-Frame.java - Implements a custom frame format
-Node2017.java - Implements a generic node, which can be generated and connected to a switch.
-Switch.java - Implements a switch which can connect up to 255 nodes to allow for their communication, and buffers frames if needed. 
-README - Documentation for this project, including compilation instructions
-nodeTest.java - Temporary testing file for nodes
+Main.java 	- The main class, which instantiates the switch and all nodes, as well as performing cleanup.
+Frame.java 	- Implements a custom frame format
+Node2017.java 	- Implements a generic node, which can be generated and connected to a switch.
+Switch.java 	- Implements a switch which can connect up to 255 nodes to allow for their communication, and buffers frames if needed. 
+Makefile	- Build automation
+README 		- Documentation for this project, including compilation instructions
 
 Feature Checklist:
 
-Feature 						| Status/Description 	| 
----------------------------------------------------------
-Project Compiles and Builds 	|	
-without warnings or errors		|
+Feature 							| Status/Description 	| 
+-----------------------------------------------------------------------------------------
+Project Compiles and Builds without warnings or errors		|		
 								|
-Switch class					|
+Switch class							|
 								|
-Switch has a frame 				|
-buffer, and read/writes 		|
-appropriately					|
+Switch has a frame buffer, and read/writes appropriately	|						
 								|
-Switch allows multiple 			|
-connections						|
+Switch allows multiple connections				|		
 								|
-Switch floods frame when it 	|			
-doesn't know the destination	|
+Switch floods frame when it doesn't know the destination	|			
 								|
-Switch learns destinations, 	|
-and doesn't forward 			|
-packet to any port 				|
-except the one required			|			
+Switch learns destinations, and doesn't forward packet 		|
+to any port except the one required				|
 								|
-Node class						|						
+Node class							|				
 								|
-Nodes instantiate, 				|
-and open connection 			|
-to the switch					|
+Nodes instantiate, and open connection to the switch		|			
 								|
-Nodes open their 				|
-input files, and 				|
-send data to switch				|
+Nodes open theirinput files, and send data to switch		|		
 								|
-Nodes open their output 		|
-files, and save data 			|
-that they recieved				|		
+Nodes open their outputfiles, and save data that 		|
+they recieved				
 
 Known Bugs:
 
