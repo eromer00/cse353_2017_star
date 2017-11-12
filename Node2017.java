@@ -34,7 +34,7 @@ public class Node2017 extends Thread {
         
         //CREATE OUTPUT FILES
         try {
-        	output_file = new File("../nodes/output/node" + nodenum +"output.txt"); // this is easier
+        	output_file = new File("./nodes/output/node" + nodenum +"output.txt"); // this is easier
         	
         	if(!output_file.exists()) { //if output doesn't exist make it exist
         		output_file.createNewFile(); //they get created as we process node to node
