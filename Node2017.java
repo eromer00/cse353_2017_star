@@ -2,6 +2,7 @@
 import java.io.*;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -9,10 +10,13 @@ public class Node2017 extends Thread {
 
     ArrayList<String> outdata = new ArrayList<>();
     public int switchport = 0;
-    private int portnum;
-    private int nodenum;
+    private int portnum = 0;
+    private int nodenum = 0;
     private int sleep_duration = 500; //ms --> 1/2 sec
     //private Socket sock;
+    
+    public boolean Sending_Done = false;
+    public boolean Terminate = false;
     
     File output_file;
 
@@ -63,15 +67,34 @@ public class Node2017 extends Thread {
 
     }
 
-    @Override
     public void run() {
     	
     	int numofelements = outdata.size(); //# of frames to send
     	//remember this is global within this class
+    	ServerSocket server;
     	
     	SendToSwitch(numofelements); //send frames to switch and let it worry about where they go
-
+    	server = AssignPort(); //get a port from the switch, also inform that this node is done sending
+    	
+    	//then receive data to write to file
     }
+    
+    private ServerSocket AssignPort() {
+    	
+    	ServerSocket server;
+    	while(true) {
+	    	try {
+	    		setPortnum(Switch.port); //This is dependent on the port static method in switch class
+				server = new ServerSocket(portnum);
+				Sending_Done = true;
+				break;
+			} catch (Throwable e) {
+				System.out.println("ERROR, CANT START SERVER WITH PORT: " + portnum + "\n" + e);
+			}
+    	}   	
+		return server;
+    }
+
 
     private void SendToSwitch(int numofelements) {
     	
@@ -98,6 +121,7 @@ public class Node2017 extends Thread {
     			
     		}catch(Throwable e) {
     			try {
+    				System.out.println("Waiting on the switch...");
     				Thread.sleep(sleep_duration);
     			}catch(InterruptedException err){
     				continue;
@@ -107,7 +131,6 @@ public class Node2017 extends Thread {
     	}
     }
 
-
     private void setPortnum(int x) {
         this.portnum = x;
     }
@@ -116,9 +139,13 @@ public class Node2017 extends Thread {
         this.nodenum = x;
     }
 
-    public int getPortNum() { return portnum; }
+    public int getPortNum() { 
+    	return portnum; 
+    }
 
-    public int getNodenum() { return nodenum; }
+    public int getNodenum() { 
+    	return nodenum; 
+    }
 }
 
 class NodeSend extends Thread {
