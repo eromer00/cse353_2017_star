@@ -20,35 +20,30 @@ public class Main {
         Switch ourSwitch = new Switch(serverswitch, num_nodes);
 
         //Construct a new Thread
-        Thread ourThread = new Thread(ourSwitch);
+        Thread switchThread = new Thread(ourSwitch);
 
         //Start up the switch (Note, according to pdf it must be a thread of its own)
-        ourThread.start();
-
-        //switch server port will be 50000
-        //System.out.println("it works");
+        switchThread.start();
 
         //populate the list with node objects to keep organization
         ArrayList<Node2017> nodegroup = new ArrayList<Node2017>();
-        i = 1;
-        while(i <= num_nodes) {
-        	//System.out.println("YAS\n");
 
+        for(i = 1; i <= num_nodes; i++) {
+            //Create a new node
             Node2017 newNode = new Node2017(50000, i, serverswitch);
 
-            //You do in fact need the .txt, it's in the PDF very clearly. Also, worked fine when I re-added the .txt in my copy.
+            //Add it to the list of nodes for later cleanup?
         	nodegroup.add(newNode);
 
             //Construct a new Thread for each node
             Thread nodeThread = new Thread(newNode);
 
-            //Start up the switch (Note, according to pdf it must be a thread of its own)
+            //Start up the thread for the new node
             nodeThread.start();
 
-        	i++;
         }
 
-        //When all nodes are done, shut them all down
+        //When all nodes are done, shut them all down (had to comment out due to race condition stuff)
         
         //Call Terminate_Node for each node
         /*for(int i2 = 1; i2 <= num_nodes; i2++) {
