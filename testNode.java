@@ -3,20 +3,21 @@ import java.net.Socket;
 
 public class testNode {
     public static void main(String[] args) {
-        /* Node2017 anode = new Node2017("nodea.txt", 20000, 1);
-        Node2017 bnode = new Node2017("nodeb.txt", 20001, 2);
-        Node2017 cnode = new Node2017("nodec.txt", 20002, 3); */
+        Node2017 anode = new Node2017(50000, 1, 50000);
+        Node2017 bnode = new Node2017(50000, 2, 50000);
+        Node2017 cnode = new Node2017(50000, 3, 50000);
 
-        //anode.run();
-        //bnode.run();
-        //cnode.run();
+        System.out.println(
+        new Frame(anode.outdata.get(0)).toBinaryString() + "," +
+        new Frame(bnode.outdata.get(1)).toBinaryString() + "," +
+        new Frame(cnode.outdata.get(2)).toBinaryString());
 
-        Switch test = new Switch(50000, 20);
+        /*Switch test = new Switch(50000, 20);
         test.Port(5);
         test.Port(2);
 
         test.run();
-
+    */
 
 
         //test for github
