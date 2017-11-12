@@ -46,7 +46,7 @@ public class Node2017 extends Thread {
         
         //READ IN STUFF
         try {
-            BufferedReader br = new BufferedReader(new FileReader("../nodes/node" + nodenum + ".txt"));
+            BufferedReader br = new BufferedReader(new FileReader("./nodes/node" + nodenum + ".txt"));
             String s;
 
             //read in lines and convert to padded binary string
