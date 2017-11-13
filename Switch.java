@@ -1,11 +1,16 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Switch implements Runnable{
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
+
+public class Switch extends Thread{
     public static int port = 50000;         //hand out ports at 50,000 (I'm confused, since the Main class instantiates the nodes, shouldn't it be handing on their port numbers, not the switch class?)
     public int serverPort;                  //port for serverSocket
     public static int nodes = 0;
@@ -14,6 +19,7 @@ public class Switch implements Runnable{
     public static Boolean terminate = false;
     public static int sleep = 100;
     public static ReentrantLock lock = new ReentrantLock();
+    public static boolean Terminate = false;
 
     /*
      * Switch Constructor
@@ -43,7 +49,9 @@ public class Switch implements Runnable{
         try {
             if (switchingTable == null) {
                 switchingTable = new ArrayList<Integer>();
-                for (int i = 0; i < 256; i++) switchingTable.add(-1);
+                for (int i = 0; i < 300; i++) {
+                	switchingTable.add(-1);
+                }
             }
             assignPortNum = Switch.port;
             Switch.port++;
@@ -69,8 +77,67 @@ public class Switch implements Runnable{
      * 2 - flood frame
      * 3 - flood ACK frame
      * 4 - bad frame (used for error checking)*/
-
-
+    	
+    	ListenerThread listen = new ListenerThread(serverPort);
+    	listen.start();
+    	
+    	
+    	int nodeport = -1;
+    	Frame frame = null;
+    	try {
+    		while(true) {
+    			
+    			nodeport = -1;
+    			if(Terminate) {
+    				return;
+    			}
+    			if(frames.size() == 0) {
+    				System.out.println("Currently have no frames");
+    				Thread.sleep(500);
+    				continue;
+    			}
+    			
+    			frame = frames.get(frames.size() - 1);
+    			
+    			if(switchingTable == null) {
+    				switchingTable = new ArrayList<Integer>();
+    				for(int k = 0; k < 300; k++) {
+    					switchingTable.add(-1);
+    				}
+    			}
+    			
+    			if(switchingTable.get(frame.getDest()) != null && frame != null) {
+    				nodeport = switchingTable.get(frame.getDest());
+    			}
+    			
+    			if(nodeport == -1) {
+    				java.util.Collections.rotate(frames, 1);
+    				if(frame == null) {
+    					frames.removeAll(java.util.Collections.singleton(null));
+    				}
+    				Thread.sleep(500);
+    				continue;
+    			}
+    			
+    			Socket sock;
+    			try {
+    				sock = new Socket(InetAddress.getLocalHost(), nodeport);
+    			}catch(Throwable e) {
+    				java.util.Collections.swap(frames, 0, frame.getSize()-1);
+    				Thread.sleep(500);
+    				continue;
+    			}
+    			
+    			PrintWriter pt = new PrintWriter(sock.getOutputStream(), true);
+    			pt.print(frame.toBinaryString());
+    			pt.close();
+    			sock.close();
+    		}	
+    		
+    	}catch(Exception e) {
+    		
+    	}
+    	
     }
 
 
@@ -90,8 +157,9 @@ public class Switch implements Runnable{
                 Socket socket;
                 ServerSocket listener = new ServerSocket(serverPort);
 
-                for (;;) {
-                    if (Switch.terminate) return;
+                while(true) {
+                    if (Switch.Terminate) 
+                    	return;
                     System.out.println("Trying to establish a connection.");
                     socket = listener.accept();
 
@@ -100,16 +168,18 @@ public class Switch implements Runnable{
                             new InputStreamReader(socket.getInputStream())
                     );
 
-                    for (;;) {
+                    while(true) {
                         String data = input.readLine();
-                        if (data.equals("terminate")) break;
+                        
+                        if (data.equals("terminate")) 
+                        	break;
 
                         Frame frame = new Frame(data);
                         Switch.frames.add(frame);
                     }
                 }
             } catch (Throwable e) {
-                System.out.println("Warning:" + e.toString());
+                System.out.println("Warning:" + e);
             }
         }
     }
