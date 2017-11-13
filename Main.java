@@ -15,34 +15,33 @@ public class Main {
     			ArrayList<Node2017> nodeRay = new ArrayList<Node2017>(); //ArrayList of Nodes
     			for (int i = 1; i <= nodeNum; i++) {
     				//msg("Main: Starting node "+i);
-    				nodeRay.add(new Node2017(i, 49152));
+    				nodeRay.add(new Node2017(i, 60000));
     			}
     			//msg("Main: Creating switch");
-    			Switch s = new Switch(49152, nodeNum);
+    			Switch s = new Switch(60000, nodeNum);
     			s.start();
     			//msg("Main: Switch is running");
     			/* 
     				* I have to to close each node after they have sent data, and then close the switch
-    				*/
+    				*
     			ArrayList<Node2017> nodesLeft = new ArrayList<Node2017>(nodeRay);
     			for (;;) {
     				for (int i = nodesLeft.size()-1; i > -1; i--) {
     					Node2017 n = nodesLeft.get(i);
     					if (n.Sending_Done)
-    						System.out.println("SHIT");
     						nodesLeft.remove(i);
     				}
     				//msg("Main: Frames left: "+Switch.frames.size()+" Nodes left: "+nodesLeft.size());
     				if (Switch.frames.size() == 0 && nodesLeft.size() == 0) 
     					break;
     				try {
-    					Thread.sleep(1000);
+    					Thread.sleep(500);
     				} catch (Throwable e) {
     					System.out.println("CAN'T SLEEP");
     				};
     			}
     			try {
-    				Thread.sleep(1000);
+    				Thread.sleep(500);
     			} catch (Throwable e) {};
     			
     			System.out.println("Main closing everything");
