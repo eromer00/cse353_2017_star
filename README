@@ -26,27 +26,27 @@ Feature Checklist:
 
 Feature 							| Status/Description 	| 
 -----------------------------------------------------------------------------------------
-Project Compiles and Builds without warnings or errors		|		
+Project Compiles and Builds without warnings or errors		| Complete
 								|
-Switch class							|
+Switch class							| Partial
 								|
-Switch has a frame buffer, and read/writes appropriately	|						
+Switch has a frame buffer, and read/writes appropriately	| Complete						
 								|
-Switch allows multiple connections				|		
+Switch allows multiple connections				| Complete		
 								|
-Switch floods frame when it doesn't know the destination	|			
+Switch floods frame when it doesn't know the destination	| Incomplete			
 								|
-Switch learns destinations, and doesn't forward packet 		|
+Switch learns destinations, and doesn't forward packet 		| Complete 
 to any port except the one required				|
-								|
+								| Partial
 Node class							|				
+								|  
+Nodes instantiate, and open connection to the switch		| Complete			
 								|
-Nodes instantiate, and open connection to the switch		|			
-								|
-Nodes open theirinput files, and send data to switch		|		
+Nodes open their input files, and send data to switch		| Complete		
 								|
 Nodes open their outputfiles, and save data that 		|
-they recieved				
+they recieved							| Incomplete
 
 Known Bugs:
 
