@@ -12,7 +12,7 @@ public class Main {
 
         //make sure num of nodes stays within defined range.
         if(num_nodes < 2 || num_nodes > 255) {
-        	System.out.println("please define number of nodes such that 2 < num of nodes < 255");
+        	System.out.println("please define number of nodes such that 2 <= num of nodes <= 255");
         	return;
         }
 
@@ -35,25 +35,17 @@ public class Main {
             //Add it to the list of nodes for later cleanup?
         	nodegroup.add(newNode);
 
+        }
+
+        for(i = 0; i < nodegroup.size(); i++) {
             //Construct a new Thread for each node
-            Thread nodeThread = new Thread(newNode);
+            Thread nodeThread = new Thread(nodegroup.get(i));
 
             //Start up the thread for the new node
             nodeThread.start();
-
         }
-
         //When all nodes are done, shut them all down (had to comment out due to race condition stuff)
-        
-        //Call Terminate_Node for each node
-        /*for(int i2 = 1; i2 <= num_nodes; i2++) {
-            try {
-                nodegroup.get(i2).TerminateNode();
-            } catch (IOException e) {
-                System.out.println("didn't terminate node");
-            }
-        }
-        //Terminate the switch
-        ourSwitch.close();*/
+
+        ourSwitch.close();
     }
 }

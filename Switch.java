@@ -67,14 +67,20 @@ public class Switch implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             PrintWriter pw = new PrintWriter(sock.getOutputStream());
             for(;;) {
-                String line = br.readLine();
-                if(line == "terminate") {
-                    break;
-                }
-                else if(line != null) {
-                    pw.print(line);
+                if(br.ready()) {
+                    String line = br.readLine();
+                    if (line.equals("terminate")) {
+                        break;
+                    } else {
+                        pw.println(line);
+                        pw.flush();
+                    }
                 }
             }
+            pw.close();
+            br.close();
+            sock.close();
+            ss.close();
         }catch(Exception e) {
         }
     }
