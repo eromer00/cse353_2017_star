@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -8,24 +9,47 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NodeHelper2017 extends Thread {
 	
 	public Node2017 reference;
-	public ArrayList<String> outdata;
-    ServerSocket server;
-    Socket data_reciever;
+	
+    public ServerSocket server;
+    public Socket data_reciever;
     int nodenum, portnumber, serverport;
     private int sleep_duration = 500; //ms --> 1/2 sec
-    
+    File file;
  
     public void run() {
+    	
+    	 //READ IN STUFF
+    	List<String> outdata = new ArrayList<String>();
+        try {
+        	System.out.println("NODE CURRENTLY: " + nodenum);
+        	
+        	file = new File("./nodes/node" + nodenum + ".txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String s;
+
+            //read in lines and convert to padded binary string
+            while((s = br.readLine()) != null) {
+                outdata.add(s);
+            }
+            br.close();
+            
+        } catch (Exception e) {
+            System.out.println("Error setting up node " + nodenum + "\nERROR: " + e);
+        }
+           
+        //actual_node.outdata = outdata;
+        
     	
     	//this all runs in a loop from main
     	int numofelements = outdata.size(); //# of frames to send
     	//remember this is outdata is global within this class
     	
-    	SendToSwitch(numofelements); //send frames to switch and let it worry about where they go
+    	SendToSwitch(numofelements, outdata); //send frames to switch and let it worry about where they go
     	//System.out.println("SENDTOSWITCH Done");
     	server = AssignPort(); //get a port from the switch, also inform that this node is done sending
     	//System.out.println("ASSIGNPORT Done");
@@ -33,7 +57,7 @@ public class NodeHelper2017 extends Thread {
     	//System.out.println("RECIEVE_WRITE Done");
     }
     
-    private void SendToSwitch(int numofelements) {
+    private void SendToSwitch(int numofelements, List<String> outdata) {
     	
     	PrintWriter pt;
     	String out_data;
@@ -47,12 +71,18 @@ public class NodeHelper2017 extends Thread {
     			pt = new PrintWriter(send_out.getOutputStream(), true);
     			
     			for(int k = 0; k < numofelements; k++) {
+    				
     				out_data = outdata.get(k); //get our binary string frame, that is converted already
+    				
+    				String[] split = out_data.split(":");
+                    Frame a = new Frame(nodenum, Integer.parseInt(split[0]), split[1]);
+
     				//Frame f = new Frame(out_data);
-    				//System.out.println("Sent: " + f.getData());
-    				pt.print(out_data); //the switch should handle dest, src, and stuff
+    				//System.out.println(a.toBinaryString());
+                    
+    				pt.println(a.toBinaryString()); //the switch should handle dest, src, and stuff
     			}
-    			
+				pt.println("terminate");
     			pt.close();
     			send_out.close();
     			break;
@@ -125,7 +155,7 @@ public class NodeHelper2017 extends Thread {
         			else {
         				System.out.println("Waiting on Switch...\n");
         				try {
-        					Thread.sleep(sleep_duration);
+        					Thread.sleep(200);
         				}catch(InterruptedException err){
         					
         				}

@@ -31,7 +31,6 @@ public class Node2017 extends Thread {
         actual_node.reference = this;
         actual_node.nodenum = nodenum;
 
-        
         //filename should be of noden for some n
         //directory should be of thisfile'sspot/nodes/output/noden.txt
         
@@ -47,26 +46,6 @@ public class Node2017 extends Thread {
         	System.out.println("ERROR: " + e + "\ncouldn't make outputfile for node basically");
         };
         
-        //READ IN STUFF
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("./nodes/node" + nodenum + ".txt"));
-            String s;
-
-            //read in lines and convert to padded binary string
-            while((s = br.readLine()) != null) {
-                String[] split = s.split(":");
-
-                Frame a = new Frame(nodenum, Integer.parseInt(split[0]), split[1]);
-                outdata.add(a.toBinaryString());
-
-            }
-            br.close();
-            
-        } catch (Exception e) {
-            System.out.println("Error setting up node " + nodenum + "\nERROR: " + e);
-        }
-           
-        actual_node.outdata = outdata;
         actual_node.start();
         
     }

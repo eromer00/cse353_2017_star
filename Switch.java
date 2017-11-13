@@ -1,17 +1,11 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.io.*;
 import java.util.*;
-import java.util.concurrent.locks.ReentrantLock;
+import java.net.*;
+import java.util.concurrent.locks.*;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
 public class Switch extends Thread{
-    public static int port = 50000;         //hand out ports at 50,000 (I'm confused, since the Main class instantiates the nodes, shouldn't it be handing on their port numbers, not the switch class?)
+    public static int port = 49000;         //hand out ports at 50,000 (I'm confused, since the Main class instantiates the nodes, shouldn't it be handing on their port numbers, not the switch class?)
     public int serverPort;                  //port for serverSocket
     public static int nodes = 0;
     public static ArrayList<Integer> switchingTable;
@@ -78,16 +72,12 @@ public class Switch extends Thread{
      * 3 - flood ACK frame
      * 4 - bad frame (used for error checking)*/
     	
-    	ListenerThread listen = new ListenerThread(serverPort);
-    	listen.start();
-    	
-    	
-    	int nodeport = -1;
+    	ListenerThread listener = new ListenerThread(serverPort);
+    	listener.start();
+	
     	Frame frame = null;
     	try {
     		while(true) {
-    			
-    			nodeport = -1;
     			if(Terminate) {
     				return;
     			}
@@ -99,23 +89,32 @@ public class Switch extends Thread{
     			
     			frame = frames.get(frames.size() - 1);
     			
+    			//Switching table
     			if(switchingTable == null) {
     				switchingTable = new ArrayList<Integer>();
     				for(int k = 0; k < 300; k++) {
     					switchingTable.add(-1);
     				}
     			}
-    			
+    			int nodeport = -1;
+    			System.out.println("FRAME DEST: " +frame.getDest());
     			if(switchingTable.get(frame.getDest()) != null && frame != null) {
     				nodeport = switchingTable.get(frame.getDest());
     			}
     			
     			if(nodeport == -1) {
-    				java.util.Collections.rotate(frames, 1);
-    				if(frame == null) {
-    					frames.removeAll(java.util.Collections.singleton(null));
+    				Collections.rotate(frames, 1);
+    				if(frame != null) {
+    					System.out.println("Unknown print location");
     				}
-    				Thread.sleep(500);
+    				else {
+    					frames.removeAll(Collections.singleton(null));
+    				}
+    				Thread.sleep(300);
+    				//if (frame.getDest() == 0) {
+    	    		//	frames.remove(frame);
+
+    				//}
     				continue;
     			}
     			
@@ -123,19 +122,22 @@ public class Switch extends Thread{
     			try {
     				sock = new Socket(InetAddress.getLocalHost(), nodeport);
     			}catch(Throwable e) {
-    				java.util.Collections.swap(frames, 0, frame.getSize()-1);
-    				Thread.sleep(500);
+    				java.util.Collections.swap(frames, 0, frame.getSize() - 1);
+    				Thread.sleep(700);
     				continue;
     			}
     			
     			PrintWriter pt = new PrintWriter(sock.getOutputStream(), true);
-    			pt.print(frame.toBinaryString());
+    			pt.println(frame.toBinaryString());
     			pt.close();
     			sock.close();
+    			frames.remove(frame);
+				System.out.println("Done with node, "+frames.size()+" more frames to send, done ");
+
     		}	
     		
     	}catch(Exception e) {
-    		
+    		System.out.println(e.toString());
     	}
     	
     }
@@ -170,6 +172,8 @@ public class Switch extends Thread{
 
                     while(true) {
                         String data = input.readLine();
+                        
+                        System.out.println("DATA: " + data);
                         
                         if (data.equals("terminate")) 
                         	break;
