@@ -1,3 +1,4 @@
+package proj2_take2;
 
 
 public class Frame {
@@ -6,7 +7,7 @@ public class Frame {
     private String binaryframe = null;
 
     private int src;
-    private int dest;
+    public int dest;
     private int size;
     private String data;
 

@@ -1,51 +1,67 @@
-import java.io.IOException;
+package proj2_take2;
+
 import java.util.*;
 
-
 public class Main {
-    public static void main(String[] args) {
-        //Get the number of nodes to be instantiated from the command line argument
-        int num_nodes = Integer.parseInt(args[0]);
 
-        //Preparation for node management
-        int i = 1, serverswitch = 50000;
+	//rewritten from scratch take 3
+	
+	public static void main(String[] args) {
+		int num_nodes = 255;
+		
+		if(num_nodes > 255 || num_nodes < 2) {
+			System.out.println("Number of nodes must be between 2 and 255 total");
+			return;
+		}
+		
+		ArrayList<Node2017> node_array = new ArrayList<Node2017>();
+		
+		for(int i = 1; i <= num_nodes; i++) {
+			node_array.add(new Node2017(49152, i));		
+		}
+		
+		Switch s = new Switch(49152, num_nodes);
+		s.start();
+		
+		ArrayList<Node2017> nodes = new ArrayList<Node2017>(node_array);
+		
+		while(true) {
+			
+			for(int k = nodes.size() - 1; k > -1; k--) {
+				Node2017 nod = nodes.get(k);
+				
+				if(nod.Sending_Done) {
+					nodes.remove(k);
+				}
+				
+			}
+			
+			if(Switch.frames.size() == 0 && nodes.size() == 0) {
+				break;
+			}
+			
+			try {
+				Thread.sleep(1200);
+			} catch(Throwable e) {
+				System.out.println("ERROR: main sleep --> " + e.toString());
+			}
+		}
+		try {
+			Thread.sleep(1000);
+		} catch (Throwable e) {};
+		for(int j = 0; j < num_nodes; j++) {
+			node_array.get(j).Terminate_Node();
+		}
+		
+		try {
+			Thread.sleep(1200);
+		} catch(Throwable e) {
+			System.out.println("ERROR: main sleep --> " + e.toString());
+		}
+		
+		s.Terminate_Switch();
+		System.out.println("Fully finished!!!....finally");
+		System.exit(0);
+	}
 
-        //make sure num of nodes stays within defined range.
-        if(num_nodes < 2 || num_nodes > 255) {
-        	System.out.println("please define number of nodes such that 2 <= num of nodes <= 255");
-        	return;
-        }
-
-        //Instantiate a single switch (Will it end up needing to be a thread of its own?)
-        Switch ourSwitch = new Switch(serverswitch, num_nodes);
-
-        //Construct a new Thread
-        Thread switchThread = new Thread(ourSwitch);
-
-        //Start up the switch (Note, according to pdf it must be a thread of its own)
-        switchThread.start();
-
-        //populate the list with node objects to keep organization
-        ArrayList<Node2017> nodegroup = new ArrayList<Node2017>();
-
-        for(i = 1; i <= num_nodes; i++) {
-            //Create a new node
-            Node2017 newNode = new Node2017(50000, i, serverswitch);
-
-            //Add it to the list of nodes for later cleanup?
-        	nodegroup.add(newNode);
-
-        }
-
-        for(i = 0; i < nodegroup.size(); i++) {
-            //Construct a new Thread for each node
-            Thread nodeThread = new Thread(nodegroup.get(i));
-
-            //Start up the thread for the new node
-            nodeThread.start();
-        }
-        //When all nodes are done, shut them all down (had to comment out due to race condition stuff)
-
-        ourSwitch.close();
-    }
 }
