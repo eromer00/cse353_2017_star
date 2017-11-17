@@ -12,7 +12,7 @@ public class Switch extends Thread{
     public static ArrayList<Integer> switchingTable;
     public static ArrayList<Frame> frames;
     public static Boolean terminate = false;
-    public static int sleep_duration = 500;
+    public static int sleep_duration = 200;
     public static ReentrantLock lock = new ReentrantLock();
     public static boolean Terminate = false;
     public int mainPort = 0;
@@ -33,7 +33,11 @@ public class Switch extends Thread{
     	try {
     		//if it's not there, create it
     		if(switchingTable == null) {
-    			buildSwitchTable();
+    			switchingTable = new ArrayList<Integer>();
+    			for(int i = 0; i < 300; i++) {
+    				//System.out.println("ADD");
+    				switchingTable.add(-1);
+    			}
     		}
     		alloced_port = Switch.port;
     		Switch.port++;
@@ -49,63 +53,57 @@ public class Switch extends Thread{
     }
     
     public void run() {
-    	ListeningThread listener = new ListeningThread(mainPort);
-    	listener.start();
-    	
-    	Frame fr = null;
-    	
-    	try {
-    		while(true) {
-    			if(Terminate) {
-    				return;
-    			}
-    		
-	    		if(frames.size() == 0) {
-	    			System.out.println("No Frames to process...");
-	    			Thread.sleep(sleep_duration);
-	    		}
-	    		fr = frames.get(frames.size()- 1);
-	    		
-	    		if(switchingTable == null) {
-	    			buildSwitchTable();
-	    		}
-	    		
-	    		int nodePort = -1;
-	    		if(fr != null && switchingTable.get(fr.dest) != null) {
-	    			nodePort = switchingTable.get(fr.dest);
-	    		}
-	    		
-	    		if(nodePort == -1) {
-	    			Collections.rotate(frames, 1);
-	    			if(fr == null) {
-	    				frames.removeAll(Collections.singleton(null));
-	    			}
-	    			else {
-	    				System.out.println(fr.dest + ":Unknown port location");
-	    			}
-	    			Thread.sleep(sleep_duration);
-	    			continue;
-	    		}
-	    		
-	    		Socket sock;
-	    		
-	    		try {
-	    			sock = new Socket(InetAddress.getLocalHost(), nodePort);
-	    		}catch(Throwable e) {
-	    			Collections.swap(frames, 0, frames.size() - 1);
-	    			Thread.sleep(sleep_duration);
-	    			continue;
-	    		}
-	    		
-	    		PrintWriter pt = new PrintWriter(sock.getOutputStream(), true);
-	    		pt.println(fr.toBinaryString());
-	    		pt.close();
-	    		sock.close();
-	    		frames.remove(fr);
-    		}
-    	}catch(Throwable e) {
-    		System.out.println("Switch error:" + e);
-    	}	
+    	ListeningThread listen = new ListeningThread(mainPort);
+		listen.start();
+
+		Frame frame = null;
+		try {
+			while(true) {
+				if (terminate) {
+					return;
+				}
+				if (frames.size() == 0) {
+					Thread.sleep(sleep_duration);
+					continue;
+				}
+				frame = frames.get(frames.size()-1);
+				if (switchingTable == null) {
+					buildSwitchTable();
+				}
+				int nodePort = -1;
+				if (frame != null && switchingTable.get(frame.dest) != null) {
+					nodePort = switchingTable.get(frame.dest);
+				}
+					
+				if (nodePort == -1) {
+					Collections.rotate(frames, 1);
+					if (frame != null) 
+						System.out.println("Unknown port location: node "+frame.dest);
+					else {
+						frames.removeAll(Collections.singleton(null));
+					}
+					Thread.sleep(sleep_duration);
+					continue;
+				}
+
+				Socket sock;
+				try {
+					sock = new Socket(InetAddress.getLocalHost(), nodePort); 
+				} catch (Throwable e) {
+					Collections.swap(frames, 0, frames.size()-1);
+					Thread.sleep(sleep_duration);
+					continue;
+				}
+
+				PrintWriter pt = new PrintWriter(sock.getOutputStream(), true);
+				pt.println(frame.toBinaryString());
+				pt.close();
+				sock.close();
+				frames.remove(frame);
+			}
+		} catch (Throwable e) {
+			System.out.println("ERROR: switch, src:" + frame.src + "dest:" + frame.dest);
+		}
     }
     
     private static void buildSwitchTable() {
@@ -115,3 +113,5 @@ public class Switch extends Thread{
 		}
     }
 }
+
+
