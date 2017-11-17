@@ -1,15 +1,14 @@
 package proj2_take2;
 
-
 public class Frame {
 
     private int status = 0;
     private String binaryframe = null;
 
-    private int src;
+    public int src;
     public int dest;
-    private int size;
-    private String data;
+    public int size;
+    public String data;
 
     /*
         Constructor for creation/encryption of a frame
@@ -26,18 +25,38 @@ public class Frame {
         setStatus(src, dest, size);
 
         StringBuilder tmp = new StringBuilder();
-        tmp.append(toBinary(String.valueOf(src)));
-        tmp.append(toBinary(String.valueOf(dest)));
-        tmp.append(toBinary(String.valueOf(size)));
+        
+        tmp.append(Integer.toBinaryString(src));
+        tmp.append("::::::");
+        tmp.append(Integer.toBinaryString(dest));
+        tmp.append("::::::");      
+        tmp.append(Integer.toBinaryString(size));
+        tmp.append("::::::");
         tmp.append(toBinary(data));
         binaryframe = tmp.toString();
+        
+        //tmp.append(toBinary(String.valueOf(src)));
+        //tmp.append(toBinary(String.valueOf(dest)));
+        //tmp.append(toBinary(String.valueOf(size)));
+        
     }
 
     public Frame(String binstring) {
         this.binaryframe = binstring;
+              
+        String[] parts = binstring.split("::::::");
+        
+        this.src = Integer.parseInt(parts[0], 2);
+        this.dest = Integer.parseInt(parts[1], 2);
+        this.size = Integer.parseInt(parts[2], 2);
+        
+        setData(parts[3]);
+        
+        //THE PROBLEM WAS THAT THE BINARY STRING WAS ASSUMED TO BE A FIXED SIZE
+        //WHICH ISN'T ALWAYS TRUE SO I PUT A WAY TO SPLIT THEM UP ACCORDINGLY
 
         //extract/decrypt src
-        int tmp = Integer.parseInt(binstring.substring(0,8), 2);
+       /* int tmp = Integer.parseInt(binstring.substring(0,8), 2);
         setSrc((char)tmp);
 
         //extract/decrypt dest
@@ -51,22 +70,10 @@ public class Frame {
         //extract/decrypt data
         String data = binstring.substring(24);
         setData(data);
-
+*/
         //determine status
         setStatus(getSrc(), getDest(), getSize());
 
-    }
-
-    private void setSrc(char x) {
-        this.src = Integer.parseInt(Character.toString(x));
-    }
-
-    private void setDest(char x) {
-        this.dest = Integer.parseInt(Character.toString(x));
-    }
-
-    private void setSize(char x) {
-        this.size = Integer.parseInt(Character.toString(x));
     }
 
     private void setData(String x) {
@@ -80,19 +87,19 @@ public class Frame {
     }
 
     public int getSrc() {
-        return src;
+        return this.src;
     }
 
     public int getDest() {
-        return dest;
+        return this.dest;
     }
 
     public int getSize() {
-        return size;
+        return this.size;
     }
 
     public String getData() {
-        return data;
+        return this.data;
     }
 
 
