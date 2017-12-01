@@ -1,45 +1,166 @@
 package starofstars;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
 public class Node implements Runnable {
 
-	public int Port = 0;
+	private int tracker = 0;
+	private int Port = 0;
 	public int identificationNumber;
 	public int switchIdentification;
+	public int switchPort;
+	
+	private CASSwitch switchReference;
 
 	private File directory;
 	private File mainfile;
 	private File in_file;
 	
 	private ArrayList<Frame> framesToSend;
+	private ArrayList<Frame> framesRecieved = new ArrayList<Frame>();
+	private Socket socket = null;
 	
-	public Node(int identification, int switchIdentification) {
+	private int numofLines = 0;
+	
+	public boolean Terminate = false;
+
+	
+	public Node(int identification, int switchIdentification, CASSwitch switchReference, int switchPort) {
 		this.identificationNumber = identification; //hold the node number make it global to object
 		this.switchIdentification = switchIdentification;
+		this.switchReference = switchReference;
+		this.switchPort = switchPort;
+		this.Port = this.switchReference.allocPort(this.identificationNumber); //reference the switch that this node is connecting to
+		
+		
+		msg("Preparing Node...");
 				
 		prepOutputFiles();
 		readInputFiles();
-		msg("Successfully assembled Frames for sending!");		
+		
+		if(framesToSend != null) {
+			msg("Successfully assembled Frames for sending!");		
+		}
+		else if (framesToSend.size() == 0) {
+			msg("This Node has no frames to send...");
+		}
+		
 	}
-	
+
+	@SuppressWarnings("unused")
 	@Override
-	public void run() { //when ran by the executor, it will send the arraylist of frames on their way...
+	public void run() { //when ran by the executor, it will send the arraylist of frames on their way, each as a series of bytes
+						//which the switch will handle (can be converted back using the frame class)
 		
-		// TODO Auto-generated method stub
 		
-		//allowing testi
-		/*if (Main.rng.nextFloat() < 0.05) {
+		
+		//msg("I was given port: " + this.Port);
+		//msg("My switch's port is: " + this.switchPort);
+		
+		NodeListener listener = new NodeListener(this.Port, this);
+		listener.start();
+		
+		try {
+			//Thread.sleep(200);
+			socket = new Socket("localhost", this.switchReference.getPort()); 
+			//msg("Accepting..");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+			String data = null;
+			int sourceSwitch = 0, sourceNode = 0; 
+			
+			
+			//msg("Waiting 5 seconds before starting...");
+			
+			try {
+				Thread.sleep(2000); //wait 2 seconds before starting just in case socket isn't ready yet...
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
+			for(int i = 0; i < framesToSend.size(); i++) {
+				Frame fr = framesToSend.get(i);
+				msg("sending: " + fr.toString());
+		
+				writer.println(fr.toString()); //uses a string at the moment, find a way to
+				//convert frame to bytes and bytes back to frames while not breaking the 
+				//TERMINATE logic that the listener look for
+				//it was faster to implement it with strings honestly
+				
+				Thread.sleep(250);
+			}
+			writer.println("TERMINATE"); //so the CASSwitch will know to stop listening to this particular node
+			
+			Frame fr = null;
+			String g = null;
+			int k = 0;
+			while(true) {
+				
+				fr = null;
+				g = null;
+				
+				if(framesRecieved.size() != 0) {
+					fr = framesRecieved.get(0);
+					msg("Recieved Frame: " + fr.toString());
+					
+					String[] tmp = fr.getSrc().split(",");
+					
+					int srcSwitch = Integer.parseInt(tmp[0].substring(1));
+					int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
+					
+					g = Integer.toString(srcSwitch) + "_" + Integer.toString(srcNode) + "," + fr.getData();
+					//msg("Writing: " + g);
+					writeToTxt(g);
+					
+					framesRecieved.remove(fr);
+					
+				}
+				else {
+					msg("no frames to process waiting...");
+					Thread.sleep(1200);
+					/*if(this.tracker > (Main.numOfLines / 2) - 20) {
+						this.Terminate = true;
+						this.socket.close();
+						
+						return;
+					}
+					tracker++;*/
+				}
+				//then do something with the frames
+				//k++;	
+				
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+		}catch(Throwable e) {
+			msgPort("ERROR -> " + e.toString(), this.Port);
+			//e.printStackTrace();
+		}
+		
+		
+		//allow 0.05 failure, needs ACK and CRC system functional
+		/*if (Main.rand.nextFloat() < 0.05) {
 			msg("Corrupting data...");
 			frame.data = frame.data.substring(0, frame.data.length()/2);
 		}
-		if (Main.rng.nextFloat() < 0.05) {
+		if (Main.rand.nextFloat() < 0.05) {
 			msg("Losing frame...");
 			continue;
 		}*/
@@ -47,9 +168,9 @@ public class Node implements Runnable {
 	}
 	
 	//Create output files for corresponding node, make directory if it doesn't exist
+	//working correctly
 	private void prepOutputFiles() {
 		String dir = "./nodes/output";
-		msg("START Creating Output File");
 		try {
 			mainfile = new File("./nodes/output/node"+ this.switchIdentification + "_" + this.identificationNumber + "output.txt");
 			directory = new File(dir);
@@ -58,7 +179,8 @@ public class Node implements Runnable {
 			if(directory.mkdir()) {
 				msg("directory: \"" + dir +"\" didn't exist so I made it :)");
 			}
-			if(!mainfile.exists()) {		
+			if(!mainfile.exists()) {	
+				msg("Creating Output File");
 				mainfile.createNewFile();
 			}	
 		}catch(Throwable e) {
@@ -66,7 +188,20 @@ public class Node implements Runnable {
 		}		
 	}
 	
-	private void readInputFiles() {
+	public synchronized void writeToTxt(String str) {
+		try {
+			BufferedWriter txtWriter = new BufferedWriter(new FileWriter(new File("./nodes/output/node"+ this.switchIdentification + "_" + this.identificationNumber +"output.txt"), true));
+			txtWriter.write(str);
+			txtWriter.newLine();
+			txtWriter.close();
+		} catch (IOException e) {
+			msg("Failed to write to output txt file");
+			e.printStackTrace();
+		}
+	}
+	
+	//working correctly
+	private synchronized void readInputFiles() {
 		BufferedReader br = null;
 		String temp = null;
 		int switch_dest = 0, node_dest = 0; 
@@ -75,20 +210,32 @@ public class Node implements Runnable {
 		
 		String data = null;
 		try {	
-			msg("START Reading input files...");
+			msg("Reading input files and storing the information...");
 			in_file = new File("./nodes/node" + this.switchIdentification + "_" + this.identificationNumber + ".txt");
 			br = new BufferedReader(new FileReader(in_file));
 			
 			while((temp = br.readLine()) != null) {
 				String[] tmp = temp.split("_");
 				String[] tmp2 = temp.split(",");
+				String[] tmp3 = tmp[1].split(",");
 				
-				switch_dest = Integer.parseInt(tmp[0].toString());
-				node_dest = Character.getNumericValue(tmp[1].charAt(0));
-				data = tmp2[1];		
+				int dstSwitch = Integer.parseInt(tmp[0].substring(0));
+				//msg("DSTSWITCH: " + dstSwitch);
+				
+				int dstNode = Integer.parseInt(tmp3[0]);
+				//msg("DSTNode: " + dstNode);
+				
+				//switch_dest = Integer.parseInt(tmp[0].toString());
+				//node_dest = Character.getNumericValue(tmp[1].charAt(0));
+				if(tmp2.length == 1) {
+					data = ""; //there are some cases where the generator would give blank data, this fixes it
+				}
+				else {
+					data = tmp2[1];		
+				}
 				
 				String src_string = "(" + this.switchIdentification + "," + this.identificationNumber + ")";
-				String dst_string = "(" + switch_dest + "," + node_dest + ")";
+				String dst_string = "(" + dstSwitch + "," + dstNode + ")";
 				
 				Frame fr = new Frame(); //there are multiple way to reconstruct the frame
 				//new Frame(bytes of frame), reconstructs frame from bytes
@@ -121,7 +268,7 @@ public class Node implements Runnable {
 				//sum of byte values of the frame.
 				//a checksum for destination node to check if data
 				//arrived intact :)
-				
+
 				//Testing Frame Strings
 				//msg(fr.toString());
 				//msg(fr.getBytes().toString());
@@ -132,7 +279,15 @@ public class Node implements Runnable {
 				framesToSend.add(fr);
 				
 				//all this is assembled right btw...
+				this.numofLines++;
 			}
+			
+			if(Main.numOfLines == 0) {
+				Main.numOfLines = this.numofLines;
+			}
+			
+			br.close();
+			
 		}catch (Exception e) {
 			msg("ERROR READING IN FILE --> " + e.toString());
 			e.printStackTrace();
@@ -142,11 +297,29 @@ public class Node implements Runnable {
 	public int getPort() {
 		return this.Port;
 	}
+	
+	public int getIdentificationNumber() {
+		return identificationNumber;
+	}
+
+	public int getSwitchIdentification() {
+		return switchIdentification;
+	}
 
 	//make reporting soooooo much nicer
 	private void msg (String input) {
 		System.out.println("\t(" + (this.switchIdentification) + "," + this.identificationNumber +"): " 
-				+ "Switch #" + this.switchIdentification + ": ---> Node#" + this.identificationNumber + " " + input);
+				+ "Switch #" + this.switchIdentification + ": ---> Node#" + this.identificationNumber + ": " + input);
+	}
+	
+	private void msgPort(String input, int port) {
+		System.out.println("\t(" + (this.switchIdentification) + "," + this.identificationNumber +"): " 
+				+ "Switch #" + this.switchIdentification + ": ---> Node#" + this.identificationNumber + " ERROR: Port# " + this.Port + "-->" + input);
+	}
+
+	public void addFrame(Frame fr) {
+		this.framesRecieved.add(fr);
+		
 	}
 
 }

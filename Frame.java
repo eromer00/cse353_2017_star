@@ -2,11 +2,15 @@ package starofstars;
 
 import java.nio.charset.StandardCharsets;
 
+
+//Remastered Frame 2.0 class, everything works here...
 public class Frame {
 
 	private int size, crc, isEmpty, acktype;
 	private String data, src, dst;
 	private Boolean badFrame;
+	
+	private boolean beVerbose = false;
 	
 	@SuppressWarnings("unused")
 	private byte[] bytes;
@@ -25,15 +29,29 @@ public class Frame {
 	
 	public Frame(String str) {
 		String[] parts = str.split("<sep>");
+		if(beVerbose)
+			msg("splitting:" + str);
+		if(beVerbose)
+			msg("processing isEmpty");
 		isEmpty = Integer.parseInt(parts[0]);
 		if (isEmpty == 0) { //make things easier for ACK
 			isEmpty = 0;
 			src = parts[1]; //[SRC]
+			if(beVerbose)
+				msg("processing SRC");
 			dst = parts[2]; //[DST]
+			if(beVerbose)
+				msg("processing DST");
 			size = Integer.parseInt(parts[3]); //[SIZE/ACK]
+			if(beVerbose)
+				msg("processing SIZE/ACK");
 			acktype = Integer.parseInt(parts[4]); //ACKTYPE
+			if(beVerbose)
+				msg("processing ACKTYPE");
 			data = parts[5];
-			crc = Integer.parseInt(parts[5]);
+			if(beVerbose)
+				msg("processing DATA");
+			crc = Integer.parseInt(parts[6]);
 
 			//integrity check
 			badFrame = genCrc() != crc;
@@ -170,5 +188,7 @@ public class Frame {
 		this.bytes = bytes;
 	}
 	
-	
+	private void msg(String input) {
+		System.out.println("\t\tFRAME: "+ input);
+	}
 }
