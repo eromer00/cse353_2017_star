@@ -1,4 +1,4 @@
-package starofstars;
+//package starofstars;
 
 import java.nio.charset.StandardCharsets;
 

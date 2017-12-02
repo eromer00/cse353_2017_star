@@ -1,4 +1,4 @@
-package starofstars;
+//package starofstars;
 
 import java.io.IOException;
 import java.io.PrintWriter;
