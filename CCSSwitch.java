@@ -1,5 +1,8 @@
 package starofstars;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -22,10 +25,79 @@ public class CCSSwitch extends Thread{
 	
 	private int tracker = 0;
 	
+	private String firewallFile = "./firewall.txt";
+	public static ArrayList<String> fireWallRules = new ArrayList<String>();
+	
 	public CCSSwitch(int port, int startingPort) {
 		this.port = port;	
 		CCSSwitch.startingPort = startingPort;
 		msg("Preparing CCSSwitch...");
+		
+		//perpare firewall file
+		if(Main.isFirewallEnabled) {
+			prepFireWall();
+		}
+		else {
+			msg("Firewall function is disabled.");
+		}
+		//else check if empty
+	}
+	
+	private void prepFireWall() {
+			
+		File in_file = null;
+		BufferedReader br = null;
+		String temp = null;
+		int switch_dest = 0, node_dest = 0; 
+		String data = null;
+		
+		String switchValue = null;
+		String nodeValue = null;
+		String manage = null;
+
+		try {	
+			msg("Reading in firewall rules from file...");
+			in_file = new File(this.firewallFile);
+			br = new BufferedReader(new FileReader(in_file));
+			
+			while((temp = br.readLine()) != null) {
+				switchValue = null;
+				nodeValue = null;
+				
+				//maintained as string because of the possible * char
+				//msg("firewall in: " + temp);
+				String[] tmp = temp.split(",");
+				String[] tmp2 = temp.split("_");
+				
+				switchValue = tmp2[0];
+				
+				String[] tmp3 = tmp2[1].split(",");
+				
+				nodeValue = tmp3[0];
+				
+				if(tmp[1] == null) {
+					manage = "Invalid";
+				}
+				else {
+					manage = tmp[1].substring(1, tmp[1].length());
+				}
+				
+				data = "(" + switchValue + "," + nodeValue + ") :" + manage;
+				//msg ("DATA: " + data);
+				Main.globalRules.add(data);
+			}
+			
+			for(int i = 0; i < Main.globalRules.size(); i++) {
+				msg("Enforcing Rule: " + Main.globalRules.get(i));
+			}
+			
+			br.close();
+			
+		}catch (Exception e) {
+			msg("ERROR READING IN FILE --> " + e.toString());
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void run() {
@@ -38,18 +110,30 @@ public class CCSSwitch extends Thread{
 		
 		Frame fr = null;
 		
+
+		
 		while(true) {
 			
 			if(frameList.size() != 0) {
-				
+					
 				fr = frameList.get(0);
+				msg("Recieved Frame: " + fr.toString());
 				
 				String[] tmp = fr.getDst().split(",");
 				
 				int dstSwitch = Integer.parseInt(tmp[0].substring(1));
 				int dstNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
+				//(x,*) :local
+				String check = "(" + Integer.toString(dstSwitch) + "," + "*) :local";
 				
-				//msg("Reciev " + fr.toString());
+				
+				
+				if(Main.globalRules.contains(check) && Main.isFirewallEnabled) {
+					msg("Firewall --> blocked traffic to CASSwitch #" + Integer.toString(dstSwitch) + " is enforced");
+					msg("Firewall --> draining frame from queue...");
+					frameList.remove(fr);
+					continue;
+				}	
 				
 				int sendTo = switchingTable.get(dstSwitch);
 				
@@ -104,17 +188,17 @@ public class CCSSwitch extends Thread{
 		return give;
 	}
 
-	private void msg (String input) {
-		System.out.println("\tCCSSwitch: " +  input);
+	private synchronized void msg (String input) {
+		System.out.println("CCSSwitch: " +  input);
 
 	}
 	
-	private static void msg_static (String input) {
-		System.out.println("\tCCSSwitch: " +  input);
+	private synchronized static void msg_static (String input) {
+		System.out.println("CCSSwitch: " +  input);
 
 	}
 	
-	public void addFrame(Frame fr) {
+	public synchronized void addFrame(Frame fr) {
 		frameList.add(fr);
 	}
 }
@@ -129,7 +213,7 @@ class sendToSwitch extends Thread {
 		this.fr = fr;
 	}
 	
-	public void run() {
+	public synchronized void run() {
 		
 		Socket nodeSocket = null;
 		
@@ -147,7 +231,7 @@ class sendToSwitch extends Thread {
 		
 	}
 	
-	private void msg (String input) {
-		System.out.println("sendToSwitch: " + input);
+	private synchronized void msg (String input) {
+		System.out.println("sendToCASSwitch: " + input);
 	}
 }

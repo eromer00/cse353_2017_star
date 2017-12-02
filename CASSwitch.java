@@ -81,6 +81,8 @@ public class CASSwitch implements Runnable {
 					int dstSwitch = Integer.parseInt(tmp[0].substring(1));
 					int dstNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
 					
+					String check = "(" + Integer.toString(dstSwitch) + "," + Integer.toString(dstNode) + ") :local";
+					
 					//msg("(" + dstSwitch + "," + dstNode + ")");
 					
 					//SEND TO CCS SWITCH CASE
@@ -103,6 +105,22 @@ public class CASSwitch implements Runnable {
 					
 					//SEND TO A NODE CASE
 					else if(dstSwitch == this.identificationNumber) {
+						
+						//firewall check
+						if(Main.getRules().contains(check) && Main.isFirewallEnabled) {
+							String[] tmp2 = fr.getSrc().split(",");
+
+							int srcSwitch = Integer.parseInt(tmp2[0].substring(1));
+							int srcNode = Integer.parseInt(tmp2[1].substring(0, tmp2[1].length() - 1));
+							//String internalCheck = "(" + Integer.toString(srcSwitch) + "," + Integer.toString(srcNode) + ")";
+							if(srcSwitch != this.identificationNumber) {
+								msg("Firewall --> this node: " + fr.getDst() + " is only accepting local traffic");
+								msg("Firewall --> draining the frame...");
+								frameList.remove(fr);
+								continue;
+							}	
+						}
+						//if it passes then it can be sent to the node
 						
 						//msg("This frame is meant for me, I'll just send it to the node in my network");
 						int send = this.switchingTable.get(dstNode);
@@ -161,7 +179,7 @@ public class CASSwitch implements Runnable {
 	
 	//make reporting soooooo much nicer
 	private void msg (String input) {
-		System.out.println("CASSwitch #" + this.identificationNumber + ": " + input);
+		System.out.println("\tCASSwitch #" + this.identificationNumber + ": " + input);
 	}
 	
 	public int getPort() {
@@ -185,7 +203,7 @@ class sendToNode extends Thread{
 		this.fr = fr;
 	}
 	
-	public void run() {
+	public synchronized void run() {
 		
 		Socket nodeSocket = null;
 		
@@ -203,8 +221,8 @@ class sendToNode extends Thread{
 		
 	}
 	
-	private void msg (String input) {
-		System.out.println("sendToCSS: " + input);
+	private synchronized void msg (String input) {
+		System.out.println("\tsendToCSS: " + input);
 	}
 	
 }

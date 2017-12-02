@@ -112,6 +112,7 @@ public class Node implements Runnable {
 				g = null;
 				
 				if(framesRecieved.size() != 0) {
+					
 					fr = framesRecieved.get(0);
 					msg("Recieved Frame: " + fr.toString());
 					
@@ -119,6 +120,10 @@ public class Node implements Runnable {
 					
 					int srcSwitch = Integer.parseInt(tmp[0].substring(1));
 					int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
+					
+					if(fr.getAcktype() == 2) {
+						msg("(" + srcSwitch + "," + srcNode + ")" + " Has been firewalled");
+					}
 					
 					g = Integer.toString(srcSwitch) + "_" + Integer.toString(srcNode) + "," + fr.getData();
 					//msg("Writing: " + g);
@@ -129,7 +134,7 @@ public class Node implements Runnable {
 				}
 				else {
 					msg("no frames to process waiting...");
-					Thread.sleep(1200);
+					Thread.sleep(1300);
 					/*if(this.tracker > (Main.numOfLines / 2) - 20) {
 						this.Terminate = true;
 						this.socket.close();
@@ -142,7 +147,7 @@ public class Node implements Runnable {
 				//k++;	
 				
 				try {
-					Thread.sleep(200);
+					Thread.sleep(400);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -308,12 +313,12 @@ public class Node implements Runnable {
 
 	//make reporting soooooo much nicer
 	private void msg (String input) {
-		System.out.println("\t(" + (this.switchIdentification) + "," + this.identificationNumber +"): " 
+		System.out.println("\t\t(" + (this.switchIdentification) + "," + this.identificationNumber +"): " 
 				+ "Switch #" + this.switchIdentification + ": ---> Node#" + this.identificationNumber + ": " + input);
 	}
 	
 	private void msgPort(String input, int port) {
-		System.out.println("\t(" + (this.switchIdentification) + "," + this.identificationNumber +"): " 
+		System.out.println("\t\t(" + (this.switchIdentification) + "," + this.identificationNumber +"): " 
 				+ "Switch #" + this.switchIdentification + ": ---> Node#" + this.identificationNumber + " ERROR: Port# " + this.Port + "-->" + input);
 	}
 

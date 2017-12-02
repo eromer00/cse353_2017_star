@@ -27,6 +27,8 @@ public class CASListenerThread extends Thread {
 			//msg("attempting to connect via port: " + port);
 			listener = new ServerSocket(port);
 			
+			String check = "(" + this.outerSwitch.identificationNumber + "," + "*) :local";
+			
 			while(true) {
 				
 				Frame fr = null;
@@ -51,6 +53,19 @@ public class CASListenerThread extends Thread {
 					}
 					else {			
 						fr = new Frame(incomingData);
+						
+						if(Main.getRules().contains(check) && Main.isFirewallEnabled) {
+							
+							String[] tmp = fr.getSrc().split(",");
+							int srcSwitch = Integer.parseInt(tmp[0].substring(1));
+							//int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
+							
+							if(srcSwitch != this.outerSwitch.identificationNumber) {
+								fr.setAcktype(2); //i think something like this would work, idk it's up to you
+							}
+						}
+						
+						
 					}
 
 					//msg("Added Frame from " + fr.getSrc() + " to the CAS queue");

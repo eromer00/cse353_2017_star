@@ -61,11 +61,11 @@ public class CCSListenerThread extends Thread {
 	}
 
 	private static void msg(String input) {
-		System.out.println("\t\tCSSListenerThread: "+ input);
+		System.out.println("CSSListenerThread: "+ input);
 	}
 	
 	private static void msgPort(String input, int port) {
-		System.out.println("\t\tCSSListenerThread: Port# " + port + " --> " + input);
+		System.out.println("CSSListenerThread: Port# " + port + " --> " + input);
 	}
 	
 }

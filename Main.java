@@ -6,19 +6,37 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.swing.text.html.CSS;
+
 
 //Requirements:
 //	Node input files to be located in: "./nodes"
 //	Node output files will be placed in "./nodes/output" (created if it doesn't exist)
-//  CSS Start Port 30000 -> each (i+1)th node becomes a port
+//  CSS Start Port 49152 -> each (i+1)th node becomes a port
+
+
 public class Main {
 	
+	private static final boolean CSSSabotage = true;
 	public static CCSSwitch Shadow = null; //keep a backup of current CASSwitch in case it fails
 	public static CCSSwitch CCS = null; //keep it out here so other switches can see it
-	public static SecureRandom rand = new SecureRandom();
-	public static int numOfLines = 0;
 	
+	public static SecureRandom rand = new SecureRandom();
+	//Each of the nodes should have a 5% chance of creating an erroneous frame on the networks. In addition, the
+	//nodes should also have a 5% chance of failing to acknowledge a frame on networks.
+	//this generates a double which the node will check if it's less than 0.05%
+	//if it is, then handle that situation (erronous frame or failure of ACK)
+
+	public static int numOfLines = 0;
+	public static ArrayList<String> globalRules = new ArrayList<String>();
+	
+	public static boolean isFirewallEnabled = false; //ability to disable the firewalling function
+	
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
+		
+		boolean testCSSOnly = false;
+		boolean testCASandNodes = false;
 		
 		ExecutorService switchExecutor = null;
 		ExecutorService nodeExecutor = null;
@@ -87,6 +105,17 @@ public class Main {
 		
 		CCS.start(); //it only needs one thread to do its work, but it will have buddy threads to send to other switches
 		
+		if(testCSSOnly) {
+			while(true) {
+				msg("Testing CSS only...");
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}		
+		}
+		
 		switchExecutor = Executors.newFixedThreadPool(CAS_count); //create a pool of switch ports
 		nodeExecutor = Executors.newFixedThreadPool(nodesPerSwitch * CAS_count); //create a pool of switch ports
 
@@ -137,8 +166,14 @@ public class Main {
 			nodeExecutor.execute(NodeList.get(i));
 		}
 		
+		int k = 0;
 		while(true){
-			
+			if(CSSSabotage && k == 50000) {
+				CCS = null;
+			}
+			if(CCS == null) { //lol idk if this actually works
+				CCS = Shadow;
+			}
 			/*if(NodeList.isEmpty()) {
 				nodeExecutor.shutdownNow();
 			}
@@ -160,6 +195,7 @@ public class Main {
 				msg("All Switches and nodes have been terminated...");
 				break;
 			}
+			k++;
 		}
 		
 		msg("finished all transfers, exitting...");
@@ -169,6 +205,10 @@ public class Main {
 	private static void msg (String input) {
 		System.out.println("\tMain: " +  input);
 
+	}
+	
+	synchronized static ArrayList<String> getRules() {
+		return Main.globalRules;
 	}
 
 }
