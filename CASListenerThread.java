@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.Charset;
-import java.util.Base64;
 
 public class CASListenerThread extends Thread {
 
@@ -64,8 +62,6 @@ public class CASListenerThread extends Thread {
 								fr.setAcktype(2); //i think something like this would work, idk it's up to you
 							}
 						}
-						
-						
 					}
 
 					//msg("Added Frame from " + fr.getSrc() + " to the CAS queue");
@@ -77,7 +73,6 @@ public class CASListenerThread extends Thread {
 			msg("ERROR --> " + e.toString());
 		}
 	}
-
 	private void msg(String input) {
 		System.out.println("\t\tCASListenerThread: "+ input);
 	}

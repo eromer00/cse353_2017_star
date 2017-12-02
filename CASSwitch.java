@@ -1,13 +1,9 @@
 //package starofstars;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class CASSwitch implements Runnable {
@@ -127,7 +123,6 @@ public class CASSwitch implements Runnable {
 
 						sendToNode cs = new sendToNode(send, fr);
 						cs.start();
-							
 					}
 					
 					//WHEN DONE REMOVE FRAME FROM QUEUE
@@ -152,7 +147,6 @@ public class CASSwitch implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
 		}
 		
 	}
@@ -218,7 +212,6 @@ class sendToNode extends Thread{
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private synchronized void msg (String input) {

@@ -8,11 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Base64.Encoder;
 
 public class Node implements Runnable {
 
@@ -115,21 +112,31 @@ public class Node implements Runnable {
 					
 					fr = framesRecieved.get(0);
 					msg("Recieved Frame: " + fr.toString());
-					
-					String[] tmp = fr.getSrc().split(",");
-					
-					int srcSwitch = Integer.parseInt(tmp[0].substring(1));
-					int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
-					
-					if(fr.getAcktype() == 2) {
-						msg("(" + srcSwitch + "," + srcNode + ")" + " Has been firewalled");
+
+					//Error check before any processing is done
+					//Use the checksum/CRC
+					/*if(fr.genCrc() != fr.getSize()) {
+						//Remove the frame from the queue. Don't need to send anything back, just don't send an ack.
+						framesRecieved.remove(fr);
+						System.out.println("Frame was erroneous");
 					}
-					
-					g = Integer.toString(srcSwitch) + "_" + Integer.toString(srcNode) + "," + fr.getData();
-					//msg("Writing: " + g);
-					writeToTxt(g);
-					
-					framesRecieved.remove(fr);
+					else {*/
+						System.out.println("Frame was not erroneous");
+						String[] tmp = fr.getSrc().split(",");
+
+						int srcSwitch = Integer.parseInt(tmp[0].substring(1));
+						int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
+
+						if (fr.getAcktype() == 2) {
+							msg("(" + srcSwitch + "," + srcNode + ")" + " Has been firewalled");
+						}
+
+						g = Integer.toString(srcSwitch) + "_" + Integer.toString(srcNode) + "," + fr.getData();
+						//msg("Writing: " + g);
+						writeToTxt(g);
+
+						framesRecieved.remove(fr);
+					//}
 					
 				}
 				else {

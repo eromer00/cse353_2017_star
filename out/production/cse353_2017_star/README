@@ -1,0 +1,80 @@
+Group Members:
+
+* Erik Romero
+* Erik Garcia
+* Steven Ramsey
+* Tyler Shellberg
+
+Compilation Instructions:
+
+Compilation can be done via the Makefile provided along with this assignment. Calling "make all" in the terminal when in a directory with the Makefile and source code present will perform the compilation.
+
+Execution Instructions:
+
+Simply called "java Main [number of switches] [number of nodes]" in the directory with the compiled .class files for this project.
+
+Files:
+
+CASListenerThread.java	- A listener thread so the CAS can be open to incoming node connections
+CASSwitch.java 		- Secondard switch, which directly connects to the nodes, and talks to the CCS Switch
+CCSListenerThread.java	- A listener thread for CCS switches, which allows them to listenening to incoming CAS switch connections
+CCSSwitch.java		- Main switch, which acts as a mediator for communication between CAS Switches
+Frame.java		- Frame class, which defines the frames that are send through the network
+Main.java		- Main class, which instantiates the switches and nodes
+Node.java		- Nodes that represent individual machines in the network
+NodeListener.java	- A listener thread for nodes, so they can listen to incoming connections
+README			- This file, with compilation and run instructions as well as the feature checklist
+Makefile		- Project build automation
+
+Feature Checklist:
+
+Feature 								| Status/Description 	| 
+-------------------------------------------------------------------------------------------------
+Project Compiles and Builds without warnings or errors			| Complete
+									|
+Switch class								| Complete (acks and error checking)
+									|
+CAS, CCS Switches has a frame queue, and reads/writes appropriately	| Complete
+									|
+CAS, CCS Switches allow multiple connections				| Complete
+									|
+CAS, CCS Switches flood frame when it doesn't know the destination	| Incomplete
+									|
+CAS, CCS Switches learn destinations, and doesn't 			| Complete
+forward packet to any port except the one required			|
+									| 
+CAS make connection to CCS						| Complete
+									| 
+CAS recieve the local firewall rules					| Complete
+									|
+CAS send AC=00 back							| Incomplete
+									|
+CAS forward the traffic and ACK properly				| Incomplete
+									|
+CCS switch opens the firewall file and get the rules			| Complete
+									|
+CCS passes global traffic						| Complete
+									|
+CCS does the global firewalls						| Complete
+									|
+CCS send AC=00 back.							| Incomplete
+									|
+CCS Shadow switches run and test properly				| Incomplete
+									|
+Node class								| Partial
+									|
+Nodes instantiate, and open connection to the switch			| Complete 
+									|
+Nodes open their input files, and send data to the switch		| Complete
+									|
+Nodes open their output files, and save data that they recieved		| Complete
+									|
+Nodes will sometimes drop acknowledgment				| Incomplete
+									|
+Nodes will sometimes create erroneous frame				| Incomplete
+									|
+Nodes will sometimes reject traffic					| Incomplete
+					
+Known Bugs:
+
+//todo
