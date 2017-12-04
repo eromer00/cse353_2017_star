@@ -115,12 +115,12 @@ public class Node implements Runnable {
 
 					//Error check before any processing is done
 					//Use the checksum/CRC
-					/*if(fr.genCrc() != fr.getSize()) {
+					if(fr.genCrc() != fr.getSize()) {
 						//Remove the frame from the queue. Don't need to send anything back, just don't send an ack.
 						framesRecieved.remove(fr);
 						System.out.println("Frame was erroneous");
 					}
-					else {*/
+					else {
 						System.out.println("Frame was not erroneous");
 						String[] tmp = fr.getSrc().split(",");
 
@@ -136,7 +136,7 @@ public class Node implements Runnable {
 						writeToTxt(g);
 
 						framesRecieved.remove(fr);
-					//}
+					}
 					
 				}
 				else {
