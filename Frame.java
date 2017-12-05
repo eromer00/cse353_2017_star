@@ -36,6 +36,7 @@ old frame
 	private String size, crc, acktype;
 	private int isEmpty;
 	private String data, src, dst;
+	private String src_sw, dst_sw;
 	private Boolean badFrame, ack = false;
 	private String str;
 
@@ -75,10 +76,12 @@ old frame
 		}
 		return sb.reverse().toString();
 	}
-	public Frame(String src, String dst, String acktype) {
+	public Frame(String src, String dst, String src_sw, String dst_sw, String acktype) {
 		super();
 		this.src = toBinaryInt(Integer.valueOf(src));
 		this.dst = toBinaryInt(Integer.valueOf(dst));
+		this.src_sw = toBinaryInt(Integer.valueOf(src_sw));
+		this.dst_sw = toBinaryInt(Integer.valueOf(dst_sw));
 		this.ack = true;
 		this.size = toBinaryInt(0);
 		this.data = acktype;
@@ -89,10 +92,12 @@ old frame
 		setStr(getBinaryString());
 	}
 
-	public Frame(int isEmpty, String src, String dst, String data, Boolean badFrame) {
+	public Frame(int isEmpty, String src, String dst, String src_sw, String dst_sw, String data, Boolean badFrame) {
 		super();
 		this.src = toBinaryInt(Integer.valueOf(src));
 		this.dst = toBinaryInt(Integer.valueOf(dst));
+		this.src_sw = toBinaryInt(Integer.valueOf(src_sw));
+		this.dst_sw = toBinaryInt(Integer.valueOf(dst_sw));
 		this.size = toBinaryInt(data.length());
 		System.out.println("asdf:" + this.size);
 		this.data = toBinary(data);
@@ -110,7 +115,7 @@ old frame
 	}
 
 	public String getBinaryString() {
-		return this.src + this.dst + this.size + this.data + this.crc;
+		return this.src + this.src_sw + this.dst + this.dst_sw + this.size + this.data + this.crc;
 	}
 	/*
 	public Frame(String str) {
@@ -147,9 +152,11 @@ old frame
 	*/
 	public Frame(String str) {
 		this.src = str.substring(0, 8);
-		this.dst = str.substring(8, 16);
-		this.size = str.substring(16, 24);
-		this.data = str.substring(24);
+		this.src_sw = str.substring(8, 16);
+		this.dst = str.substring(16, 24);
+		this.dst_sw = str.substring(24, 32);
+		this.size = str.substring(32, 40);
+		this.data = str.substring(40);
 		this.crc = data.substring(data.length() - 8);
 
 		this.data = data.substring(0, data.length()-8);
@@ -222,11 +229,11 @@ old frame
 
 	public int genCrc() {
 		String sc = getStr();
-		if(sc.length() < 25) {
+		if(sc.length() < 40) {
 			System.out.println("not long enough");
 			return 0;
 		}
-		String sc_size = sc.substring(16, 24);
+		String sc_size = sc.substring(32, 40);
 		String sc_crc = sc.substring(sc.length() - 8);
 		int x, y;
 		x = Integer.parseInt(sc_size);
@@ -247,12 +254,14 @@ old frame
 		return Integer.parseInt(ds, 2);
 	}
 
-	public String getDest() {
-		return dst;
+	public int getSSrc() {
+		String sc = src_sw;
+		return Integer.parseInt(sc, 2);
 	}
 
-	public String getSrce() {
-		return src;
+	public int getSdst() {
+		String ds = dst_sw;
+		return Integer.parseInt(ds, 2);
 	}
 
 	public int getSize() {
@@ -271,7 +280,7 @@ old frame
 
 	public String parseData() {
 		String sc = getStr();
-		sc = sc.substring(24, sc.length()-8);
+		sc = sc.substring(40, sc.length()-8);
 
 		String ret = "";
 		for(int i = 0; i < sc.length(); i+=8) {
