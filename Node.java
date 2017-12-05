@@ -21,6 +21,8 @@ public class Node implements Runnable {
 	public int identificationNumber;
 	public int switchIdentification;
 	public int switchPort;
+	private ServerSocket inputSocket;
+        private List<Socket> outputSockets;
 	
 	private CASSwitch switchReference;
 
@@ -326,5 +328,38 @@ public class Node implements Runnable {
 		this.framesRecieved.add(fr);
 		
 	}
+	
+	/**
+     * Should kill the connection to the server and close all streams and sockets.
+     * @throws IOException
+     */
+
+    public void killServerConnection() throws IOException {
+        Socket outputSocket = this.outputSockets.get(0);
+        if(outputSocket.isClosed()) {
+            System.err.println(this.identificationNumber + ": Error! Could not close Socket: Socket is already closed...");
+        } else {
+            if(outputSocket.isConnected()) {
+                outputSocket.shutdownOutput();
+            }
+            outputSocket.close();
+        }
+    }
+
+    /**
+     * This method 'closes' the Node by closing all used resources
+     */
+
+    public void closeNode() {
+        Socket outputSocket = this.outputSockets.get(0);
+        if(!outputSocket.isClosed()) {
+            try {
+                outputSocket.shutdownOutput();
+                this.inputSocket.close();
+            } catch (IOException e) {
+                System.err.println("Severe error, Node" + this.identificationNumber + " could not properly close sockets");
+            }
+        }
+    }
 
 }
