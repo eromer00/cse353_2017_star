@@ -191,4 +191,173 @@ public class Frame {
 	private void msg(String input) {
 		System.out.println("\t\tFRAME: "+ input);
 	}
+	
+	  /**
+     * This method generates a corrupt frame
+     * @return corrupt frame
+     */
+    public Frame corruptFrame() {
+        Random rand = new Random();
+        byte[] corruptFrame;
+        int omit;
+        int i = 0;
+        if (rand.nextInt(100) < 0) {
+            System.out.println("Corrupt Frame!");
+            corruptFrame = new byte[this.bytes.length - 1];
+            omit = rand.nextInt(5);
+            for (byte b: this.bytes) {
+                if (i == omit)
+                    continue;
+                corruptFrame[i] =  b;
+                i++;
+            }
+            return new Frame(corruptFrame);
+        }
+        return this;
+    }
+
+    /**
+     * Generates a Token.
+     * @return token.
+     */
+    public static Frame generateToken() {
+        byte[] bytes = new byte[6];
+        bytes[0] = 0x8; //Set token bit
+        bytes[1] = 0x0;
+        bytes[2] = 0x0;
+        bytes[3] = 0x0;
+        bytes[4] = 0x0;
+        bytes[5] = 0x0;
+        return new Frame(bytes);
+    }
+
+    /**
+     * Generates a Kill Signal.
+     * @return A kill signal for the Star Network.
+     */
+    public static Frame generateKillSig() {
+        byte[] bytes = new byte[6];
+        bytes[0] = 0x0;
+        bytes[1] = 0x0;
+        bytes[2] = 0x0;
+        bytes[3] = 0x0;
+        bytes[4] = 0x0;
+        bytes[5] = 0x4; //Kill signal
+        return new Frame(bytes);
+    }
+
+    /**
+     * Returns the whole frame in a char byte array.
+     * @return Frame.
+     */
+    public byte[] getFrame () {
+        return this.bytes;
+    }
+
+    /**
+     * Returns status of the Frame Control Byte.
+     * @return Returns 1 if Frame is not a Token, and 0 if Frame is a Token<br>
+     *
+     */
+    public int getFrameControl() {
+        return (this.bytes[1] & 0xff);
+    }
+
+    /**
+     * Looks at token bit and determines if the frame passed is a token.
+     * @return True, if the frame is a token.
+     */
+    public boolean isToken() {
+        //Checks to see if any of the Token specifiers are true
+        if (getFrameControl() == 0 || tokenBit())
+            return true;
+        return false;
+    }
+
+    /**
+     * Checks the token bit.
+     * @return True if the token bit is flipped, otherwise false.
+     */
+    private boolean tokenBit() {
+        byte bitMask = 0x8;
+        byte tmp = (byte) (bytes[0] & bitMask);
+        //If token bit is flipped, value of tmp will be 8
+        if (tmp == 0x8)
+            return true;
+        return false;
+    }
+
+    /**
+     * This method determines if the monitor bit is flipped or not.
+     * @return True, if the monitor bit has been flipped.
+     */
+    public boolean monitorBit() {
+        byte bitMask = 0x10;
+        byte tmp = (byte) (bytes[0] & bitMask);
+        //If monitor bit is flipped, value will be 16, 0 if otherwise
+        if (tmp == 0x10)
+            return true;
+        return false;
+    }
+
+    /**
+     * This method determines if the finished bit is flipped.
+     * @return True, if the finished bit is not flipped.
+     */
+    public boolean finishedBit() {
+        byte bitMask = 0x40;
+        byte tmp = (byte) (bytes[5] & bitMask);
+        //If finished bit is flipped, value will be 0x24
+        if (tmp == 0x40)
+            return false;
+        return true;
+    }
+
+    /**
+     * Sets the Monitor Bit to be 1
+     */
+    public void setMonitorBit() {
+        this.bytes[0] = (byte) (this.bytes[0] | 0x10);
+    }
+
+    /**
+     * Sets the Monitor Bit to be 0
+     */
+    public void zeroMonitorBit() {
+        this.bytes[0] = (byte) (this.bytes[0] & 0x0);
+    }
+
+    /**
+     * Sets the Finished bit in the Frame Status byte
+     */
+    public void setFinishedBit() {
+        if (this.getSize() != 0) {
+            System.out.println("Cannot set Finished Bits on a non-token frame!");
+            return;
+        }
+        byte bitMask = 0x40;
+        this.bytes[5] = (byte) (this.bytes[5] | bitMask);
+    }
+
+    /**
+     * This method returns the Frame Status.
+     * @return Return 2 means Frame acceptance
+     * Return 3 means Frame rejection
+     * Return 4 means Kill Signal
+     * Return 4 means a Node has finished all transmissions
+     */
+    public byte getFrameStatus() {
+        int sizeOfFrame = this.bytes.length;
+        return this.bytes[sizeOfFrame - 1];
+    }
+
+    /**
+     * Sets the Frame Status to val.
+     * @param val
+     */
+    public void setFrameStatus(byte val) {
+        int sizeOfFrame = this.bytes.length;
+        this.bytes[sizeOfFrame - 1] = val;
+    }
+
 }
