@@ -92,7 +92,7 @@ old frame
 		setStr(getBinaryString());
 	}
 
-	public Frame(int isEmpty, String src, String dst, String src_sw, String dst_sw, String data, Boolean badFrame) {
+	public Frame(int isEmpty, String src, String src_sw, String dst, String dst_sw, String data, Boolean badFrame) {
 		super();
 		this.src = toBinaryInt(Integer.valueOf(src));
 		this.dst = toBinaryInt(Integer.valueOf(dst));

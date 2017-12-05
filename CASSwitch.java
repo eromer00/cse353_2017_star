@@ -76,12 +76,12 @@ public class CASSwitch implements Runnable {
 					
 					msg("Recieved Frame: " + fr.toString());
 			
-					String[] tmp = fr.getDest().split(",");
+					//String[] tmp = fr.getDest().split(",");
 
 
 					
-					int dstSwitch = Integer.parseInt(tmp[0].substring(1));
-					int dstNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
+					int dstSwitch = fr.getSdst();
+					int dstNode = fr.getDst();
 					
 					String check = "(" + Integer.toString(dstSwitch) + "," + Integer.toString(dstNode) + ") :local";
 					
@@ -99,7 +99,7 @@ public class CASSwitch implements Runnable {
 								msg("Frame got corrupted somehow");
 							}
 							else { //send it to the CCSSwitch if things are good
-								CCSWriter.println(fr.toString());
+								CCSWriter.println(fr.getBinaryString());
 								CCSWriter.println("TERMINATE");
 							}
 						}
@@ -110,10 +110,10 @@ public class CASSwitch implements Runnable {
 						
 						//firewall check
 						if(Main.getRules().contains(check) && Main.isFirewallEnabled) {
-							String[] tmp2 = fr.getSrce().split(",");
+							//String[] tmp2 = fr.getSrce().split(",");
 
-							int srcSwitch = Integer.parseInt(tmp2[0].substring(1));
-							int srcNode = Integer.parseInt(tmp2[1].substring(0, tmp2[1].length() - 1));
+							int srcSwitch = fr.getSSrc();
+							int srcNode = fr.getSrc();
 							//String internalCheck = "(" + Integer.toString(srcSwitch) + "," + Integer.toString(srcNode) + ")";
 							if(srcSwitch != this.identificationNumber) {
 								msg("Firewall --> this node: " + fr.getDst() + " is only accepting local traffic");
@@ -213,8 +213,8 @@ class sendToNode extends Thread{
 			nodeSocket = new Socket();
 			nodeSocket.connect(new InetSocketAddress("localhost", port), 30000); //wait a timeout then it will close itself
 			PrintWriter nodeWriter = new PrintWriter(nodeSocket.getOutputStream(), true);	
-			msg(fr.toString());
-			nodeWriter.println(fr.toString());		
+			msg(fr.getBinaryString());
+			nodeWriter.println(fr.getBinaryString());
 			nodeWriter.println("TERMINATE");
 			
 		} catch (Throwable e) {

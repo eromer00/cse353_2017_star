@@ -92,14 +92,14 @@ public class Node implements Runnable {
 			
 			for(int i = 0; i < framesToSend.size(); i++) {
 				Frame fr = framesToSend.get(i);
-				msg("sending: " + fr.toString());
+				msg("sending: " + fr.getBinaryString());
 		
 				writer.println(fr.getBinaryString()); //uses a string at the moment, find a way to
 				//convert frame to bytes and bytes back to frames while not breaking the 
 				//TERMINATE logic that the listener look for
 				//it was faster to implement it with strings honestly
 				
-				Thread.sleep(250);
+				Thread.sleep(100);
 			}
 			writer.println("TERMINATE"); //so the CASSwitch will know to stop listening to this particular node
 			
@@ -114,16 +114,17 @@ public class Node implements Runnable {
 				if(framesRecieved.size() != 0) {
 					
 					fr = framesRecieved.get(0);
-					msg("Recieved Frame: " + fr.toString());
+					msg("Recieved Frame: " + fr.getBinaryString());
 					
-					String[] tmp = fr.getSrce().split(",");
+					//String[] tmp = fr.getSrce().split(",");
 					
-					int srcSwitch = Integer.parseInt(tmp[0].substring(1));
-					int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
-					
+					int srcSwitch = fr.getSSrc();
+					int srcNode = fr.getSrc();
+
+					/*
 					if(fr.getAcktype() == 2) {
 						msg("(" + srcSwitch + "," + srcNode + ")" + " Has been firewalled");
-					}
+					} */
 					
 					g = Integer.toString(srcSwitch) + "_" + Integer.toString(srcNode) + "," + fr.getData();
 					//msg("Writing: " + g);
@@ -239,9 +240,12 @@ public class Node implements Runnable {
 					data = tmp2[1];		
 				}
 				
-				String src_string = "(" + this.switchIdentification + "," + this.identificationNumber + ")";
-				String dst_string = "(" + dstSwitch + "," + dstNode + ")";
-				Frame fr = new Frame(1, src_string, dst_string, data, false);
+				//
+				// String src_string = "(" + this.switchIdentification + "," + this.identificationNumber + ")";
+				//String dst_string = "(" + dstSwitch + "," + dstNode + ")";
+				Frame fr = new Frame(1, String.valueOf(this.identificationNumber), String.valueOf(this.switchIdentification),
+						tmp3[0], tmp[0].substring(0),
+						data, false);
 				/*
 				Frame fr = new Frame(); //there are multiple way to reconstruct the frame
 				//new Frame(bytes of frame), reconstructs frame from bytes

@@ -2,8 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="291d32a3-10dd-49cf-bd3a-d19046f31c78" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/nodes/node1.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/nodes/node2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/nodes/node3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/nodes/output/node1output.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/nodes/output/node2output.txt" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CASListenerThread.java" afterPath="$PROJECT_DIR$/CASListenerThread.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CASSwitch.java" afterPath="$PROJECT_DIR$/CASSwitch.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CCSSwitch.java" afterPath="$PROJECT_DIR$/CCSSwitch.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Frame.java" afterPath="$PROJECT_DIR$/Frame.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Node.java" afterPath="$PROJECT_DIR$/Node.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/NodeListener.java" afterPath="$PROJECT_DIR$/NodeListener.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1680">
-              <caret line="102" column="45" lean-forward="false" selection-start-line="102" selection-start-column="45" selection-end-line="102" selection-end-column="45" />
+            <state relative-caret-position="-1699">
+              <caret line="99" column="54" lean-forward="false" selection-start-line="99" selection-start-column="54" selection-end-line="99" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -30,8 +39,8 @@
       <file leaf-file-name="Frame.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Frame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1653">
-              <caret line="271" column="25" lean-forward="true" selection-start-line="271" selection-start-column="25" selection-end-line="271" selection-end-column="25" />
+            <state relative-caret-position="981">
+              <caret line="362" column="24" lean-forward="false" selection-start-line="362" selection-start-column="19" selection-end-line="362" selection-end-column="24" />
               <folding>
                 <element signature="e#407#434#0" expanded="true" />
                 <element signature="e#3631#3632#0" expanded="true" />
@@ -40,8 +49,37 @@
                 <element signature="e#3696#3697#0" expanded="true" />
                 <element signature="e#5703#5704#0" expanded="true" />
                 <element signature="e#5720#5721#0" expanded="true" />
-                <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CASSwitch.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CASSwitch.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="146">
+              <caret line="216" column="51" lean-forward="false" selection-start-line="216" selection-start-column="51" selection-end-line="216" selection-end-column="51" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CASListenerThread.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CASListenerThread.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="167">
+              <caret line="71" column="45" lean-forward="false" selection-start-line="71" selection-start-column="45" selection-end-line="71" selection-end-column="45" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CCSSwitch.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CCSSwitch.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="209">
+              <caret line="226" column="12" lean-forward="false" selection-start-line="226" selection-start-column="12" selection-end-line="226" selection-end-column="12" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -49,21 +87,31 @@
       <file leaf-file-name="test2.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test2.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="12" column="48" lean-forward="false" selection-start-line="12" selection-start-column="48" selection-end-line="12" selection-end-column="48" />
+            <state relative-caret-position="126">
+              <caret line="8" column="47" lean-forward="false" selection-start-line="8" selection-start-column="47" selection-end-line="8" selection-end-column="47" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Node.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Node.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Node.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="130" column="20" lean-forward="true" selection-start-line="130" selection-start-column="20" selection-end-line="130" selection-end-column="20" />
+            <state relative-caret-position="-757">
+              <caret line="126" column="24" lean-forward="false" selection-start-line="126" selection-start-column="24" selection-end-line="126" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="NodeListener.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/NodeListener.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="966">
+              <caret line="49" column="92" lean-forward="false" selection-start-line="49" selection-start-column="92" selection-end-line="49" selection-end-column="92" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -77,6 +125,7 @@
       <find>accepted</find>
       <find>sleep</find>
       <find>getdst</find>
+      <find>toStr</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -97,14 +146,14 @@
         <option value="$PROJECT_DIR$/testNode.java" />
         <option value="$PROJECT_DIR$/Main.java" />
         <option value="$PROJECT_DIR$/CCSListenerThread.java" />
-        <option value="$PROJECT_DIR$/NodeListener.java" />
         <option value="$PROJECT_DIR$/test4.java" />
-        <option value="$PROJECT_DIR$/CASSwitch.java" />
-        <option value="$PROJECT_DIR$/CCSSwitch.java" />
-        <option value="$PROJECT_DIR$/CASListenerThread.java" />
-        <option value="$PROJECT_DIR$/test2.java" />
-        <option value="$PROJECT_DIR$/Node.java" />
         <option value="$PROJECT_DIR$/Frame.java" />
+        <option value="$PROJECT_DIR$/Node.java" />
+        <option value="$PROJECT_DIR$/NodeListener.java" />
+        <option value="$PROJECT_DIR$/CASSwitch.java" />
+        <option value="$PROJECT_DIR$/CASListenerThread.java" />
+        <option value="$PROJECT_DIR$/CCSSwitch.java" />
+        <option value="$PROJECT_DIR$/test2.java" />
       </list>
     </option>
   </component>
@@ -137,21 +186,6 @@
               <item name="src" type="b2602c69:ProjectViewProjectNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="src" type="b2602c69:ProjectViewProjectNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="nodes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="src" type="b2602c69:ProjectViewProjectNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="CASSwitch.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </path>
-            <path>
-              <item name="src" type="b2602c69:ProjectViewProjectNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="CCSSwitch.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -173,7 +207,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.test2">
+  <component name="RunManager" selected="Application.Unnamed">
     <configuration name="Unnamed" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -308,7 +342,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -318,7 +351,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919955" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3348365" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3348365" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -381,7 +414,6 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -410,7 +442,6 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -439,7 +470,6 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -468,7 +498,6 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -497,7 +526,6 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -526,7 +554,6 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -555,7 +582,6 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -583,7 +609,6 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -619,50 +644,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/NodeListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CASSwitch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="112" column="68" lean-forward="true" selection-start-line="112" selection-start-column="68" selection-end-line="112" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CCSSwitch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1949">
-          <caret line="121" column="53" lean-forward="false" selection-start-line="121" selection-start-column="53" selection-end-line="121" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CASListenerThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="64" column="29" lean-forward="true" selection-start-line="64" selection-start-column="29" selection-end-line="64" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="12" column="48" lean-forward="false" selection-start-line="12" selection-start-column="48" selection-end-line="12" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Frame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1653">
-          <caret line="271" column="25" lean-forward="true" selection-start-line="271" selection-start-column="25" selection-end-line="271" selection-end-column="25" />
+        <state relative-caret-position="981">
+          <caret line="362" column="24" lean-forward="false" selection-start-line="362" selection-start-column="19" selection-end-line="362" selection-end-column="24" />
           <folding>
             <element signature="e#407#434#0" expanded="true" />
             <element signature="e#3631#3632#0" expanded="true" />
@@ -671,25 +656,64 @@
             <element signature="e#3696#3697#0" expanded="true" />
             <element signature="e#5703#5704#0" expanded="true" />
             <element signature="e#5720#5721#0" expanded="true" />
-            <element signature="method#toBinary#0;class#Frame#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1680">
-          <caret line="102" column="45" lean-forward="false" selection-start-line="102" selection-start-column="45" selection-end-line="102" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Node.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="130" column="20" lean-forward="true" selection-start-line="130" selection-start-column="20" selection-end-line="130" selection-end-column="20" />
+        <state relative-caret-position="-757">
+          <caret line="126" column="24" lean-forward="false" selection-start-line="126" selection-start-column="24" selection-end-line="126" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NodeListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="966">
+          <caret line="49" column="92" lean-forward="false" selection-start-line="49" selection-start-column="92" selection-end-line="49" selection-end-column="92" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CASSwitch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="216" column="51" lean-forward="false" selection-start-line="216" selection-start-column="51" selection-end-line="216" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CASListenerThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="71" column="45" lean-forward="false" selection-start-line="71" selection-start-column="45" selection-end-line="71" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CCSSwitch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="226" column="12" lean-forward="false" selection-start-line="226" selection-start-column="12" selection-end-line="226" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="8" column="47" lean-forward="false" selection-start-line="8" selection-start-column="47" selection-end-line="8" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1699">
+          <caret line="99" column="54" lean-forward="false" selection-start-line="99" selection-start-column="54" selection-end-line="99" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

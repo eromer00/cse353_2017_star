@@ -42,6 +42,12 @@ public class NodeListener extends Thread{
 					//msg("Incoming: " + incomingData);
 					if(incomingData.equals("TERMINATE")) {
 						break;
+					} else if(incomingData.equals("TERMINATE\n")) {
+						break;
+					}
+					String test = incomingData.substring(incomingData.length() - 1);
+					if(test.equals("\n")) {
+						incomingData = incomingData.substring(0, incomingData.length() - 1);
 					}
 					Frame fr = new Frame(incomingData);
 					

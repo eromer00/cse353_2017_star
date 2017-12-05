@@ -119,10 +119,10 @@ public class CCSSwitch extends Thread{
 				fr = frameList.get(0);
 				msg("Recieved Frame: " + fr.toString());
 				
-				String[] tmp = fr.getDest().split(",");
+				//String[] tmp = fr.getDest().split(",");
 				
-				int dstSwitch = Integer.parseInt(tmp[0].substring(1));
-				int dstNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
+				int dstSwitch = fr.getSdst();
+				int dstNode = fr.getDst();
 				//(x,*) :local
 				String check = "(" + Integer.toString(dstSwitch) + "," + "*) :local";
 				
@@ -221,8 +221,8 @@ class sendToSwitch extends Thread {
 			nodeSocket = new Socket();
 			nodeSocket.connect(new InetSocketAddress("localhost", port), 30000); //wait a timeout then it will close itself
 			PrintWriter nodeWriter = new PrintWriter(nodeSocket.getOutputStream(), true);	
-			msg(fr.toString());
-			nodeWriter.println(fr.toString());		
+			msg(fr.getBinaryString());
+			nodeWriter.println(fr.getBinaryString());
 			nodeWriter.println("TERMINATE");
 			
 		} catch (Throwable e) {

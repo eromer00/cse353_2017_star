@@ -56,8 +56,8 @@ public class CASListenerThread extends Thread {
 						
 						if(Main.getRules().contains(check) && Main.isFirewallEnabled) {
 							
-							String[] tmp = fr.getSrce().split(",");
-							int srcSwitch = Integer.parseInt(tmp[0].substring(1));
+							//String[] tmp = fr.getSrce().split(",");
+							int srcSwitch = fr.getSSrc();
 							//int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
 							
 							if(srcSwitch != this.outerSwitch.identificationNumber) {
