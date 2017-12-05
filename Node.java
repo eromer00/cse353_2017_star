@@ -1,4 +1,4 @@
-package starofstars;
+//package starofstars;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -110,13 +110,13 @@ public class Node implements Runnable {
 				
 				fr = null;
 				g = null;
-				
+
 				if(framesRecieved.size() != 0) {
 					
 					fr = framesRecieved.get(0);
 					msg("Recieved Frame: " + fr.toString());
 					
-					String[] tmp = fr.getSrc().split(",");
+					String[] tmp = fr.getSrce().split(",");
 					
 					int srcSwitch = Integer.parseInt(tmp[0].substring(1));
 					int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));

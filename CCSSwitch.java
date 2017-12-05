@@ -1,4 +1,4 @@
-package starofstars;
+//package starofstars;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -119,7 +119,7 @@ public class CCSSwitch extends Thread{
 				fr = frameList.get(0);
 				msg("Recieved Frame: " + fr.toString());
 				
-				String[] tmp = fr.getDst().split(",");
+				String[] tmp = fr.getDest().split(",");
 				
 				int dstSwitch = Integer.parseInt(tmp[0].substring(1));
 				int dstNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));

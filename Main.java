@@ -1,4 +1,4 @@
-package starofstars;
+//package starofstars;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;

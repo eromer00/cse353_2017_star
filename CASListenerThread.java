@@ -1,4 +1,4 @@
-package starofstars;
+//package starofstars;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -56,7 +56,7 @@ public class CASListenerThread extends Thread {
 						
 						if(Main.getRules().contains(check) && Main.isFirewallEnabled) {
 							
-							String[] tmp = fr.getSrc().split(",");
+							String[] tmp = fr.getSrce().split(",");
 							int srcSwitch = Integer.parseInt(tmp[0].substring(1));
 							//int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
 							

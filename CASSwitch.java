@@ -1,4 +1,4 @@
-package starofstars;
+//package starofstars;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -76,7 +76,9 @@ public class CASSwitch implements Runnable {
 					
 					msg("Recieved Frame: " + fr.toString());
 			
-					String[] tmp = fr.getDst().split(",");
+					String[] tmp = fr.getDest().split(",");
+
+
 					
 					int dstSwitch = Integer.parseInt(tmp[0].substring(1));
 					int dstNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
@@ -108,7 +110,7 @@ public class CASSwitch implements Runnable {
 						
 						//firewall check
 						if(Main.getRules().contains(check) && Main.isFirewallEnabled) {
-							String[] tmp2 = fr.getSrc().split(",");
+							String[] tmp2 = fr.getSrce().split(",");
 
 							int srcSwitch = Integer.parseInt(tmp2[0].substring(1));
 							int srcNode = Integer.parseInt(tmp2[1].substring(0, tmp2[1].length() - 1));
