@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 //Remastered Frame 2.0 class, everything works here...
 public class Frame {
 
-	 private String size, crc, acktype;
+  private String size, crc, acktype;
     private int isEmpty;
     private String data, src, dst;
     private String src_sw, dst_sw;
@@ -329,9 +329,8 @@ public class Frame {
     }
 
     /**
-     * This is the main constructor for the Frame class, it constructs a frame using
-     * a formatted string from an input file.
-     * @param frameString The string containing formatted data for constructing a STPLP Frame.
+     * This is the main constructor for the Frame class
+     * @param frameString The string containing formatted data for constructing a Frame.
      * @param sourceAddress The source address.
      */
     public Frame(String frameString, byte sourceAddress) {
@@ -341,17 +340,15 @@ public class Frame {
         byte dataSize;
         byte[] data;
         byte frameStatus;
-        //Begin extraction of data from file string
+        //Extraction of data from file string
         String[] strTok = frameString.split(",");
         destinationAddress = (byte) (Integer.parseInt(strTok[0]) & 0xff);
         dataSize = (byte) (Integer.parseInt(strTok[1]) & 0xff);
         data = strTok[2].getBytes();
         //Set other data fields
-        accessControl = 0; //TODO Implement various extra credit schemes
-        frameControl = 1; //Frame is NOT a token
-        frameStatus = 0; //Frame is newly constructed
-        //Construct new Frame Value
-        //Any Logical AND with 0xff is to Compensate for Java's naughty signed bit habit.
+        accessControl = 0; 
+        frameControl = 1; 
+        frameStatus = 0; 
         this.bytes = new byte[(dataSize & 0xff) + 6];
         this.bytes[0] = accessControl;
         this.bytes[1] = frameControl;
@@ -587,5 +584,4 @@ public class Frame {
         int sizeOfFrame = this.bytes.length;
         this.bytes[sizeOfFrame - 1] = val;
     }
-
 }
