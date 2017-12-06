@@ -9,14 +9,16 @@ import java.util.Random;
  */
 public class RelayNode extends Node implements Runnable {
 
-    private List<Frame> frameBuffer;
+     private List<Frame> frameBuffer;
     private List<Frame> waitingFrames;
     private boolean sentComplete;
+    private PrintWriter outputFile;
+    private BufferedReader inputFile;
+    private int THT;
 
     public RelayNode(int identification, int switchIdentification, CASSwitch switchReference, int switchPort) {
         super(identification, switchIdentification, switchReference, switchPort);
     }
-
 
     /**
      * This method represents the Listen state of the Node.
@@ -24,7 +26,8 @@ public class RelayNode extends Node implements Runnable {
      */
     public Frame Listen() {
         Frame inputFrame;
-        while(true) {
+
+         while(true) {
             //Read from input socket a new frame
             try {
                 inputFrame = readSocket();
@@ -63,11 +66,6 @@ public class RelayNode extends Node implements Runnable {
                     writeToSocket(inputFrame);
                     continue;
                 } else if (inputFrame.getFrameStatus() == 2) {
-                    this.outputFile.println(inputFrame.getSrc() +
-                            "," + inputFrame.getDst() +
-                            "," + inputFrame.getSize() +
-                            "," + inputFrame.getData()) +
-                            "," + inputFrame.getCrc();
                     inputFrame.zeroMonitorBit();
                     writeToSocket(inputFrame); //Pass Frame to return back to Sender
                 }
@@ -101,9 +99,7 @@ public class RelayNode extends Node implements Runnable {
     }
 
     /**
-     * This method represents the transmission state of the Node. This is only active
-     * while the Node has a the token and has not gone beyond the total THT.
-     * @return Returns 0 when THT has been depleted, or 1 when there is no more data to transmit
+     * This method represents the transmission state of the Node. 
      */
     public int Transmit(Frame token){
         int currentTHT = 0;
@@ -161,14 +157,14 @@ public class RelayNode extends Node implements Runnable {
 //			System.out.println("Node " + this.getIdentificationNumber() + " lost the token!");
         return 0;
     }
-    
+
     /**
      * This functions is implementing the required Runnable method
      */
     @Override
     public void run() {
         Frame token;
-        this.acceptClient();
+        this.run();
         if (this.getIdentificationNumber() == 1) {
             //Node 1 generates the token and passes it to the neighboring node
             writeToSocket(Frame.generateToken());
