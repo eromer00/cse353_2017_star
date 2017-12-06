@@ -15,6 +15,7 @@ public class MonitorNode extends Node implements Runnable {
 
     public MonitorNode(int identification, int switchIdentification, CASSwitch switchReference, int switchPort) {
         super(identification, switchIdentification, switchReference, switchPort);
+        this.myNetwork = new HashMap<Integer, Integer>();
     }
 
 
@@ -45,7 +46,7 @@ public class MonitorNode extends Node implements Runnable {
                     return 0;
                 }
                 this.drainInputSocket();
-                run(Frame.generateToken());
+                writeToSocket(Frame.generateToken());
                 return 0;
             }
             //Check for Lost Frame
@@ -121,5 +122,19 @@ public class MonitorNode extends Node implements Runnable {
      */
     public int getPort() {
         return this.port;
+    }
+
+    @Override
+    public void run(){
+        //System.out.println("Initialized Monitor Node");
+        long simTime;
+        simTime = System.currentTimeMillis();
+        this.acceptClient();
+        while (true) {
+            if(MonitorNetwork() == 1) {
+                System.out.println(((System.currentTimeMillis() - simTime) / 1000));
+                return;
+            }
+        }
     }
 }
