@@ -32,6 +32,7 @@ public class Node implements Runnable {
 	private int numofLines = 0;
 	
 	public boolean Terminate = false;
+	private boolean ackFound = false;
 
 	
 	public Node(int identification, int switchIdentification, CASSwitch switchReference, int switchPort) {
@@ -86,28 +87,44 @@ public class Node implements Runnable {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			
-			for(int i = 0; i < framesToSend.size(); i++) {
-				Frame fr = framesToSend.get(i);
-				msg("sending: " + fr.toString());
-		
-				writer.println(fr.toString()); //uses a string at the moment, find a way to
-				//convert frame to bytes and bytes back to frames while not breaking the 
-				//TERMINATE logic that the listener look for
-				//it was faster to implement it with strings honestly
-				
-				Thread.sleep(250);
-			}
+
 			writer.println("TERMINATE"); //so the CASSwitch will know to stop listening to this particular node
 			
 			Frame fr = null;
 			String g = null;
 			int k = 0;
+
+			//Main running loop for the node where it both sends and receives frames
 			while(true) {
-				
+				//Get the first frame in the list of frames we want to send, and send it
+				fr = framesToSend.get(0);
+
+				//Once we've gotten the frame, we no longer need it in the list (the next should become the zeroth frame)
+				framesToSend.remove(0);
+
+				//Report what frame we're sending out
+				msg("sending: " + fr.toString());
+
+				//Write to the port, thus "sending" the frame
+				writer.println(fr.toString()); //uses a string at the moment, find a way to
+
+				//Wait around for acknowledgement
+				//Note, tried doing a "while(true)" loop that just did a break; on the same condition, but apparently that isn't acceptable to either Java or InteliJ, but this does the same thing
+				while(ackFound = false) {
+					//Loop through all the frames received, look for a size of 0. That one is an ACK, and we can move on.
+					for(Frame frame : framesRecieved) {
+						if(frame.getSize() == 0) {
+							ackFound = true;
+						}
+					}
+				}
+				//Reset boolean condition for next time around
+				ackFound = false;
+
 				fr = null;
 				g = null;
-				
+
+				//If there are frames being recieved
 				if(framesRecieved.size() != 0) {
 					
 					fr = framesRecieved.get(0);
@@ -118,7 +135,7 @@ public class Node implements Runnable {
 					if(fr.genCrc() != fr.getSize()) {
 						//Remove the frame from the queue. Don't need to send anything back, just don't send an ack.
 						framesRecieved.remove(fr);
-						System.out.println("Frame was erroneous");
+						System.out.println("Frame was erroneous"); //This line is temporary and should be updated
 					}
 					else {
 						System.out.println("Frame was not erroneous");
