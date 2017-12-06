@@ -12,12 +12,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Node implements Runnable {
-
-	private int tracker = 0;
+	//Variables
 	private int Port = 0;
-	public int identificationNumber;
-	public int switchIdentification;
-	public int switchPort;
+	private int identificationNumber;
+	private int switchIdentification;
 	
 	private CASSwitch switchReference;
 
@@ -31,15 +29,20 @@ public class Node implements Runnable {
 	
 	private int numofLines = 0;
 	
-	public boolean Terminate = false;
+	private boolean Terminate = false;
 	private boolean ackFound = false;
 
-	
+	/**
+	 * Constructor for the Node
+	 * @param identification 		Global dentification number for the node
+	 * @param switchIdentification 	The ID# of the switch this node connects to
+	 * @param switchReference 		Essentially a pointer to the switch this node connects to
+	 * @param switchPort 			Legacy, does nothing. Didn't remove so as not to break compat.
+	 */
 	public Node(int identification, int switchIdentification, CASSwitch switchReference, int switchPort) {
 		this.identificationNumber = identification; //hold the node number make it global to object
 		this.switchIdentification = switchIdentification;
 		this.switchReference = switchReference;
-		this.switchPort = switchPort;
 		this.Port = this.switchReference.allocPort(this.identificationNumber); //reference the switch that this node is connecting to
 		
 		
@@ -59,11 +62,13 @@ public class Node implements Runnable {
 
 	@SuppressWarnings("unused")
 	@Override
-	public void run() { //when ran by the executor, it will send the arraylist of frames on their way, each as a series of bytes
-						//which the switch will handle (can be converted back using the frame class)
-		
-		
-		
+	/**
+	 * Run by a ThreadExecutor
+	 * Sends an arrayList of frames as bytes
+	 * Switch handles/routes frames
+	 * Bytes can be converted back to frames using the frame class
+	 */
+	public void run() {
 		//msg("I was given port: " + this.Port);
 		//msg("My switch's port is: " + this.switchPort);
 		
@@ -162,17 +167,7 @@ public class Node implements Runnable {
 				else {
 					msg("no frames to process waiting...");
 					Thread.sleep(1300);
-					/*if(this.tracker > (Main.numOfLines / 2) - 20) {
-						this.Terminate = true;
-						this.socket.close();
-						
-						return;
-					}
-					tracker++;*/
 				}
-				//then do something with the frames
-				//k++;	
-				
 				try {
 					Thread.sleep(400);
 				} catch (InterruptedException e) {
@@ -219,7 +214,11 @@ public class Node implements Runnable {
 			System.out.println("ERROR: create output file failed:" + e.toString());
 		}		
 	}
-	
+
+	/**
+	 * Writes a single string to the output file for this node
+	 * @param str the string to be written to the output file
+	 */
 	public synchronized void writeToTxt(String str) {
 		try {
 			BufferedWriter txtWriter = new BufferedWriter(new FileWriter(new File("./nodes/output/node"+ this.switchIdentification + "_" + this.identificationNumber +"output.txt"), true));
@@ -231,39 +230,41 @@ public class Node implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
-	//working correctly
+
+	/**
+	 * Reads in input files for this node.
+	 */
 	private synchronized void readInputFiles() {
-		BufferedReader br = null;
-		String temp = null;
-		int switch_dest = 0, node_dest = 0; 
+		//Variables
+		BufferedReader br;
+		String inputLine;
+		String data;
+		int switch_dest = 0;
+		int node_dest = 0;
 		
 		framesToSend = new ArrayList<Frame>();
-		
-		String data = null;
+
 		try {	
 			msg("Reading input files and storing the information...");
 			in_file = new File("./nodes/node" + this.switchIdentification + "_" + this.identificationNumber + ".txt");
 			br = new BufferedReader(new FileReader(in_file));
-			
-			while((temp = br.readLine()) != null) {
-				String[] tmp = temp.split("_");
-				String[] tmp2 = temp.split(",");
-				String[] tmp3 = tmp[1].split(",");
-				
-				int dstSwitch = Integer.parseInt(tmp[0].substring(0));
+
+			//Walk through the entire input file
+			while((inputLine = br.readLine()) != null) {
+				//Get the destination switch, which is always the first number (character) in the string
+				int dstSwitch = Integer.parseInt(inputLine.substring(0, 1));
 				//msg("DSTSWITCH: " + dstSwitch);
-				
-				int dstNode = Integer.parseInt(tmp3[0]);
+
+				//Get the destination node, which is always the third character in the string
+				int dstNode = Integer.parseInt(inputLine.substring(2, 3));
 				//msg("DSTNode: " + dstNode);
-				
-				//switch_dest = Integer.parseInt(tmp[0].toString());
-				//node_dest = Character.getNumericValue(tmp[1].charAt(0));
-				if(tmp2.length == 1) {
+
+				if(inputLine.substring(4).length() == 1) {
 					data = ""; //there are some cases where the generator would give blank data, this fixes it
 				}
 				else {
-					data = tmp2[1];		
+					//The comma is at index 3. The real data starts at index 4.
+					data = inputLine.substring(4);
 				}
 				
 				String src_string = "(" + this.switchIdentification + "," + this.identificationNumber + ")";
@@ -325,22 +326,21 @@ public class Node implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
+	//Getters
 	public int getPort() {
 		return this.Port;
 	}
-	
 	public int getIdentificationNumber() {
 		return identificationNumber;
 	}
-
 	public int getSwitchIdentification() {
 		return switchIdentification;
 	}
 
-	//make reporting soooooo much nicer
+	//Method for printing out to STDOut cleanly with nice formatting
 	private void msg (String input) {
-		System.out.println("\t\t(" + (this.switchIdentification) + "," + this.identificationNumber +"): " 
+		System.out.println("\t\t(" + (this.switchIdentification) + "," + this.identificationNumber +"): "
 				+ "Switch #" + this.switchIdentification + ": ---> Node#" + this.identificationNumber + ": " + input);
 	}
 	
@@ -353,5 +353,4 @@ public class Node implements Runnable {
 		this.framesRecieved.add(fr);
 		
 	}
-
 }
