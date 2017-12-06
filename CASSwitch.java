@@ -118,6 +118,9 @@ public class CASSwitch implements Runnable {
 							if(srcSwitch != this.identificationNumber) {
 								msg("Firewall --> this node: " + fr.getDst() + " is only accepting local traffic");
 								msg("Firewall --> draining the frame...");
+
+								//TODO -- add firewall ack
+
 								frameList.remove(fr);
 								continue;
 							}	

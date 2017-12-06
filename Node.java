@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Base64.Encoder;
+import java.util.Random;
 
 public class Node implements Runnable {
 
@@ -21,6 +22,7 @@ public class Node implements Runnable {
 	public int identificationNumber;
 	public int switchIdentification;
 	public int switchPort;
+	public int random = new Random().nextInt(20);
 	
 	private CASSwitch switchReference;
 
@@ -89,7 +91,8 @@ public class Node implements Runnable {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			
+
+
 			for(int i = 0; i < framesToSend.size(); i++) {
 				Frame fr = framesToSend.get(i);
 				msg("sending: " + fr.getBinaryString());
@@ -102,40 +105,64 @@ public class Node implements Runnable {
 				Thread.sleep(100);
 			}
 			writer.println("TERMINATE"); //so the CASSwitch will know to stop listening to this particular node
-			
+
 			Frame fr = null;
 			String g = null;
 			int k = 0;
+
+			int timer = 0;
+
 			while(true) {
 				
 				fr = null;
 				g = null;
+				if(timer == 0) {
+					writer.println(framesToSend.get(0).getBinaryString());
+					msg("sending: " + framesToSend.get(0).getBinaryString());
+				}
+
+				if(timer > 2) {
+					timer = 0;
+				}
 
 				if(framesRecieved.size() != 0) {
-					
+
 					fr = framesRecieved.get(0);
 					msg("Recieved Frame: " + fr.getBinaryString());
-					
+
+
+
 					//String[] tmp = fr.getSrce().split(",");
 					
 					int srcSwitch = fr.getSSrc();
 					int srcNode = fr.getSrc();
 
-					/*
-					if(fr.getAcktype() == 2) {
+
+
+					if(fr.parseData().equals("10") && fr.getACK()) {
 						msg("(" + srcSwitch + "," + srcNode + ")" + " Has been firewalled");
-					} */
+						framesRecieved.remove(0);
+					} else if(fr.parseData().equals("11") && fr.getACK()) {
+						msg("(" + srcSwitch + "," + srcNode + ")" + " successful acknowledgement");
+						framesRecieved.remove(0);
+					} else if(fr.parseData().equals("01") && fr.getACK()) {
+						msg("(" + srcSwitch + "," + srcNode + ")" + " CRC error, resending");
+						timer = 2;
+					} else if(fr.parseData().equals("00") && fr.getACK()) {
+						msg("(" + srcSwitch + "," + srcNode + ")" + " timeout, resend");
+						//framesRecieved.remove(0);
+					}
 					
-					g = Integer.toString(srcSwitch) + "_" + Integer.toString(srcNode) + "," + fr.getData();
+					g = Integer.toString(srcSwitch) + "_" + Integer.toString(srcNode) + "," + fr.parseData();
 					//msg("Writing: " + g);
 					writeToTxt(g);
-					
-					framesRecieved.remove(fr);
-					
+					timer++;
+					//framesRecieved.remove(fr);
+					Thread.sleep(500);
 				}
 				else {
 					msg("no frames to process waiting...");
-					Thread.sleep(1300);
+					Thread.sleep(500);
 					/*if(this.tracker > (Main.numOfLines / 2) - 20) {
 						this.Terminate = true;
 						this.socket.close();
@@ -148,7 +175,7 @@ public class Node implements Runnable {
 				//k++;	
 				
 				try {
-					Thread.sleep(400);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -213,7 +240,10 @@ public class Node implements Runnable {
 		int switch_dest = 0, node_dest = 0; 
 		
 		framesToSend = new ArrayList<Frame>();
-		
+		if(random == 10) {
+			//add erroneous frame
+			framesToSend.add(new Frame("11111111111111111111111111111111111111111111111110101010"));
+		}
 		String data = null;
 		try {	
 			msg("Reading input files and storing the information...");

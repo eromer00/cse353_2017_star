@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 
 public class NodeListener extends Thread{
 
@@ -20,12 +21,14 @@ public class NodeListener extends Thread{
 	
 	public void run() {
 		String incomingData = null;
-		
+
 		//msg("Intializing Listener...");
 		try {
 			//msg("attempting to connect via port: " + port);
 			listener = new ServerSocket(port);
-			
+			msg("NodeListener:" + nodeReference + " connected");
+
+			socket = listener.accept();
 			while(true) {
 		
 				if(this.nodeReference.Terminate) {
@@ -33,7 +36,6 @@ public class NodeListener extends Thread{
 					return;
 				}
 				//msg("Listening...");
-				socket = listener.accept();
 				
 				incoming = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				
@@ -50,8 +52,23 @@ public class NodeListener extends Thread{
 						incomingData = incomingData.substring(0, incomingData.length() - 1);
 					}
 					Frame fr = new Frame(incomingData);
-					
+					//handle ack
+					int dst = fr.getSrc();
+					int sdst = fr.getSSrc();
+					int src = nodeReference.identificationNumber;
+					int ssrc = nodeReference.switchIdentification;
+					Frame ack = new Frame(String.valueOf(ssrc), String.valueOf(src),
+							String.valueOf(sdst), String.valueOf(dst), "11");
+					msg("received frame:" + fr.getSSrc() + "_" + fr.getSrc() + fr.parseData() +", sending ack:"
+					+ ssrc + src + "11"
+					);
 					nodeReference.addFrame(fr);
+
+					//fail to acknowledge 5%
+					int rand = new Random().nextInt(20);
+					if(rand != 10) {
+						nodeReference.addFrame(ack);
+					}
 				}			
 			}
 			

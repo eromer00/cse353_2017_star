@@ -106,6 +106,7 @@ old frame
 		this.isEmpty = isEmpty;
 		this.badFrame = badFrame;
 
+
 		setStr(getBinaryString());
 		if(genCrc() == 0) {
 			this.badFrame = true;
@@ -156,10 +157,10 @@ old frame
 		this.dst = str.substring(16, 24);
 		this.dst_sw = str.substring(24, 32);
 		this.size = str.substring(32, 40);
-		this.data = str.substring(40);
+		this.data = str.substring(40, str.length()-8);
 		this.crc = data.substring(data.length() - 8);
 
-		this.data = data.substring(0, data.length()-8);
+		//this.data = data.substring(0, data.length()-8);
 		setStr(getBinaryString());
 		if(genCrc() == 0) {
 			this.badFrame = true;
@@ -172,7 +173,7 @@ old frame
 		this.str = s;
 	}
 
-	private boolean getACK() {
+	public boolean getACK() {
 		return ack;
 	}
 
