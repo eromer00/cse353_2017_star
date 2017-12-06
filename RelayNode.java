@@ -14,7 +14,7 @@ public class RelayNode extends Node implements Runnable {
     private boolean sentComplete;
     private PrintWriter outputFile;
     private BufferedReader inputFile;
-    private int THT;
+    private int THT; //Token Holding Time
 
     public RelayNode(int identification, int switchIdentification, CASSwitch switchReference, int switchPort) {
         super(identification, switchIdentification, switchReference, switchPort);
@@ -102,7 +102,7 @@ public class RelayNode extends Node implements Runnable {
      * This method represents the transmission state of the Node. 
      */
     public int Transmit(Frame token){
-        int currentTHT = 0;
+        int currentTHT = 0; 
         Frame currentFrame;
         String buffer = null;
         //While the THT has not been surpassed
