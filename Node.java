@@ -239,8 +239,8 @@ public class Node implements Runnable {
 		BufferedReader br;
 		String inputLine;
 		String data;
-		int switch_dest = 0;
-		int node_dest = 0;
+		String dest_switch_and_rest[];
+		String dest_node_and_rest[];
 		
 		framesToSend = new ArrayList<Frame>();
 
@@ -251,20 +251,23 @@ public class Node implements Runnable {
 
 			//Walk through the entire input file
 			while((inputLine = br.readLine()) != null) {
+				//Break input into a substring to extract the destination switch, destination node and raw data
+				dest_switch_and_rest = inputLine.split("_");
+				dest_node_and_rest = dest_switch_and_rest[1].split(",");
+
 				//Get the destination switch, which is always the first number (character) in the string
-				int dstSwitch = Integer.parseInt(inputLine.substring(0, 1));
+				int dstSwitch = Integer.parseInt(dest_switch_and_rest[0]);
 				//msg("DSTSWITCH: " + dstSwitch);
 
 				//Get the destination node, which is always the third character in the string
-				int dstNode = Integer.parseInt(inputLine.substring(2, 3));
+				int dstNode = Integer.parseInt(dest_node_and_rest[0]);
 				//msg("DSTNode: " + dstNode);
 
-				if(inputLine.substring(4).length() == 1) {
+				if(dest_node_and_rest[1].length() == 1) {
 					data = ""; //there are some cases where the generator would give blank data, this fixes it
 				}
 				else {
-					//The comma is at index 3. The real data starts at index 4.
-					data = inputLine.substring(4);
+					data = dest_node_and_rest[1];
 				}
 				
 				String src_string = "(" + this.switchIdentification + "," + this.identificationNumber + ")";
