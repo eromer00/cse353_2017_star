@@ -9,23 +9,23 @@ import java.util.Map;
  */
 public class MonitorNode extends Node implements Runnable {
 
-    private Map<Integer, Integer> myNetwork;
+   private Map<Integer, Integer> StarNetwork;
     private InetAddress myAddress;
     private int port;
 
     public MonitorNode(int identification, int switchIdentification, CASSwitch switchReference, int switchPort) {
         super(identification, switchIdentification, switchReference, switchPort);
-        this.myNetwork = new HashMap<Integer, Integer>();
+        this.StarNetwork = new HashMap<Integer, Integer>();
     }
 
 
     /**
-     * Places each node into myNetwork. This is to keep track of who has completed their transfers.
-     * @param myNetwork List of network number and node number in the Network
+     * Places each node into StarNetwork. This is to keep track of who has completed their transfers.
+     * @param StarNetwork List of network number and node number in the Network
      */
-    public void placeNetwork(List<RelayNode> myNetwork) {
-        for (RelayNode node : myNetwork) {
-            this.myNetwork.put(this.getSwitchIdentification(), this.getIdentificationNumber());
+    public void placeNetwork(List<RelayNode> StarNetwork) {
+        for (RelayNode node : StarNetwork) {
+            this.StarNetwork.put(this.getSwitchIdentification(), this.getIdentificationNumber());
         }
     }
 
@@ -137,4 +137,5 @@ public class MonitorNode extends Node implements Runnable {
             }
         }
     }
+
 }
