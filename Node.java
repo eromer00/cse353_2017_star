@@ -108,14 +108,18 @@ public class Node implements Runnable {
 				//Write to the port, thus "sending" the frame
 				writer.println(fr.toString()); //uses a string at the moment, find a way to
 
+				//msg("RIGHT BEFORE THE FUCKING LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP");
+
 				//Wait around for acknowledgement
 				//Note, tried doing a "while(true)" loop that just did a break; on the same condition, but apparently that isn't acceptable to either Java or InteliJ, but this does the same thing
-				while(ackFound = false) {
+				while(ackFound == false) {
 					//Loop through all the frames received, look for a size of 0. That one is an ACK, and we can move on.
 					for(Frame frame : framesRecieved) {
 						if(frame.getSize() == 0) {
 							ackFound = true;
 						}
+						//Remove the ACK from the frames received buffer.
+						framesRecieved.remove(frame);
 					}
 				}
 				//Reset boolean condition for next time around
