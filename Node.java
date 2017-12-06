@@ -99,16 +99,11 @@ public class Node implements Runnable {
 				//Get the first frame in the list of frames we want to send, and send it
 				fr = framesToSend.get(0);
 
-				//Once we've gotten the frame, we no longer need it in the list (the next should become the zeroth frame)
-				framesToSend.remove(0);
-
 				//Report what frame we're sending out
 				msg("sending: " + fr.toString());
 
 				//Write to the port, thus "sending" the frame
 				writer.println(fr.toString()); //uses a string at the moment, find a way to
-
-				//msg("RIGHT BEFORE THE FUCKING LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP");
 
 				//Wait around for acknowledgement
 				//Note, tried doing a "while(true)" loop that just did a break; on the same condition, but apparently that isn't acceptable to either Java or InteliJ, but this does the same thing
@@ -122,6 +117,10 @@ public class Node implements Runnable {
 						framesRecieved.remove(frame);
 					}
 				}
+
+				//Once we've sent the frame, we no longer need it in the list (the next should become the zeroth frame)
+				framesToSend.remove(0);
+
 				//Reset boolean condition for next time around
 				ackFound = false;
 
