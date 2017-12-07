@@ -7,12 +7,14 @@ import java.util.Map;
 /**
  * This class monitors the node behavior
  */
-public class MonitorNode { //extends Node implements Runnable {
- /*
+public class MonitorNode extends Node implements Runnable {
+
 
     private Map<Integer, Integer> myNetwork;
     private InetAddress myAddress;
     private int port;
+
+
 
     public MonitorNode(int identification, int switchIdentification, CASSwitch switchReference, int switchPort) {
         super(identification, switchIdentification, switchReference, switchPort);
@@ -39,7 +41,7 @@ public class MonitorNode { //extends Node implements Runnable {
                     return 0;
                 }
                 this.drainInputSocket();
-                run(Frame.generateToken());
+                Frame.generateToken();
                 return 0;
             }
             //Check for Lost Frame
@@ -108,5 +110,5 @@ public class MonitorNode { //extends Node implements Runnable {
         return this.port;
     }
 
-    */
+
 }

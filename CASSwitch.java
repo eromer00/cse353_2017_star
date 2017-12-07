@@ -115,15 +115,16 @@ public class CASSwitch implements Runnable {
 							int srcSwitch = fr.getSSrc();
 							int srcNode = fr.getSrc();
 							//String internalCheck = "(" + Integer.toString(srcSwitch) + "," + Integer.toString(srcNode) + ")";
-							if(srcSwitch != this.identificationNumber) {
+							//if(srcSwitch != this.identificationNumber) {
 								msg("Firewall --> this node: " + fr.getDst() + " is only accepting local traffic");
 								msg("Firewall --> draining the frame...");
 
-								//TODO -- add firewall ack
+								Frame fw = new Frame("1", String.valueOf(srcSwitch), "2", String.valueOf(srcSwitch), "10");
 
 								frameList.remove(fr);
+								frameList.add(fw);
 								continue;
-							}	
+							//}
 						}
 						//if it passes then it can be sent to the node
 						

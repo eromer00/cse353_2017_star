@@ -28,7 +28,6 @@ public class NodeListener extends Thread{
 			listener = new ServerSocket(port);
 			msg("NodeListener:" + nodeReference + " connected");
 
-			socket = listener.accept();
 			while(true) {
 		
 				if(this.nodeReference.Terminate) {
@@ -36,6 +35,7 @@ public class NodeListener extends Thread{
 					return;
 				}
 				//msg("Listening...");
+				socket = listener.accept();
 				
 				incoming = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				
@@ -43,8 +43,6 @@ public class NodeListener extends Thread{
 					incomingData = incoming.readLine();
 					//msg("Incoming: " + incomingData);
 					if(incomingData.equals("TERMINATE")) {
-						break;
-					} else if(incomingData.equals("TERMINATE\n")) {
 						break;
 					}
 					String test = incomingData.substring(incomingData.length() - 1);
@@ -55,11 +53,6 @@ public class NodeListener extends Thread{
 
 					nodeReference.addFrame(fr);
 
-					//fail to acknowledge 5%
-					int rand = new Random().nextInt(20);
-					if(rand != 10) {
-					//	nodeReference.addFrame(ack);
-					}
 				}			
 			}
 			

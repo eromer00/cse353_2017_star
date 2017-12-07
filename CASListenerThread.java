@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.Base64;
+import java.util.Random;
 
 public class CASListenerThread extends Thread {
 
@@ -43,7 +44,7 @@ public class CASListenerThread extends Thread {
 				
 				while(true) { //if we recieved a connection, then process everything that connection has to offer
 					String incomingData = incoming.readLine();
-										
+					boolean send = true;
 					if(incomingData.equals("TERMINATE")) {
 						break;
 					}
@@ -63,17 +64,34 @@ public class CASListenerThread extends Thread {
 							
 							if(srcSwitch != this.outerSwitch.identificationNumber) {
 								//fr.setAcktype(2); //i think something like this would work, idk it's up to you
-								Frame tmp = new Frame("1", "1", String.valueOf(fr.getSrc()), String.valueOf(srcSwitch), "10");
+								Frame tmp = new Frame("1", String.valueOf(fr.getSrc()), "2", String.valueOf(srcSwitch), "10");
+								msg("just sent a firewall ack");
 								outerSwitch.addFrame(tmp);
 							}
 						}
-						
+						if(fr.genCrc() == 0) {
+							msg("BAD BAD BAD, crc doesn't match up");
+							Frame crcack = new Frame("1", String.valueOf(fr.getSrc()), "2", String.valueOf(fr.getSSrc()), "01");
+							outerSwitch.addFrame(crcack);
+							//send = false;
+						}
 						
 					}
 
 					//msg("Added Frame from " + fr.getSrc() + " to the CAS queue");
-					outerSwitch.addFrame(fr);
-				}			
+					if(send) {
+						outerSwitch.addFrame(fr);
+						//normal ack
+						//5% chance to not acknowledge
+						Random rand = new Random();
+						int checkrand = rand.nextInt(20);
+						if (checkrand != 10) {
+							Frame ack = new Frame("1", String.valueOf(fr.getSrc()), "2", String.valueOf(fr.getSSrc()), "11");
+							outerSwitch.addFrame(ack);
+						}
+					}
+					send = true;
+				}
 			}
 			
 		}catch (Throwable e) {

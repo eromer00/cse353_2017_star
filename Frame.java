@@ -1,6 +1,7 @@
 //package starofstars;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class Frame {
 
@@ -369,7 +370,26 @@ old frame
 	 * Eric's Frame methods
 	 */
 
-	/*
+
+	//you can pass in the byte representation to reconstruct the frame as well
+	public Frame(byte[] bytes) {
+		String str = new String(bytes, StandardCharsets.UTF_8);
+		String[] parts = str.split("<sep>");
+		isEmpty = Integer.parseInt(parts[0]);
+		if (isEmpty == 0) { //make things easier for ACK
+			isEmpty = 0;
+			src = parts[1]; //[SRC]
+			dst = parts[2]; //[DST]
+			// size = Integer.parseInt(parts[3]); //[SIZE/ACK]
+			// acktype = Integer.parseInt(parts[4]); //ACKTYPE
+			// data = parts[5];
+			// crc = Integer.parseInt(parts[6]);
+
+			//integrity check
+			// badFrame = genCrc() != crc;
+		}
+		this.bytes = toString().getBytes();
+	}
 
 	public Frame corruptFrame() {
 		Random rand = new Random();
@@ -490,5 +510,5 @@ old frame
 		int sizeOfFrame = this.bytes.length;
 		this.bytes[sizeOfFrame - 1] = val;
 	}
-	*/
+
 }
