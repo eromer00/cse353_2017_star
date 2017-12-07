@@ -83,7 +83,7 @@ old frame
 		this.src_sw = toBinaryInt(Integer.valueOf(src_sw));
 		this.dst_sw = toBinaryInt(Integer.valueOf(dst_sw));
 		this.ack = true;
-		this.size = toBinaryInt(0);
+		this.size = "00000000";
 		this.data = acktype;
 		this.crc = size;
 
@@ -363,4 +363,132 @@ old frame
 
 		return str.toString();
 	}
+
+
+	/**
+	 * Eric's Frame methods
+	 */
+
+	/*
+
+	public Frame corruptFrame() {
+		Random rand = new Random();
+		byte[] corruptFrame;
+		int omit;
+		int i = 0;
+		if (rand.nextInt(100) < 0) {
+			System.out.println("Corrupt Frame!");
+			corruptFrame = new byte[this.bytes.length - 1];
+			omit = rand.nextInt(5);
+			for (byte b: this.bytes) {
+				if (i == omit)
+					continue;
+				corruptFrame[i] =  b;
+				i++;
+			}
+			return new Frame(corruptFrame);
+		}
+		return this;
+	}
+
+
+	public static Frame generateToken() {
+		byte[] bytes = new byte[6];
+		bytes[0] = 0x8; //Set token bit
+		bytes[1] = 0x0;
+		bytes[2] = 0x0;
+		bytes[3] = 0x0;
+		bytes[4] = 0x0;
+		bytes[5] = 0x0;
+		return new Frame(bytes);
+	}
+
+	public static Frame generateKillSig() {
+		byte[] bytes = new byte[6];
+		bytes[0] = 0x0;
+		bytes[1] = 0x0;
+		bytes[2] = 0x0;
+		bytes[3] = 0x0;
+		bytes[4] = 0x0;
+		bytes[5] = 0x4; //Kill signal
+		return new Frame(bytes);
+	}
+
+	public byte[] getFrame () {
+		return this.bytes;
+	}
+
+	public int getFrameControl() {
+		return (this.bytes[1] & 0xff);
+	}
+
+
+	public boolean isToken() {
+		//Checks to see if any of the Token specifiers are true
+		if (getFrameControl() == 0 || tokenBit())
+			return true;
+		return false;
+	}
+
+
+	private boolean tokenBit() {
+		byte bitMask = 0x8;
+		byte tmp = (byte) (bytes[0] & bitMask);
+		//If token bit is flipped, value of tmp will be 8
+		if (tmp == 0x8)
+			return true;
+		return false;
+	}
+
+
+	public boolean monitorBit() {
+		byte bitMask = 0x10;
+		byte tmp = (byte) (bytes[0] & bitMask);
+		//If monitor bit is flipped, value will be 16, 0 if otherwise
+		if (tmp == 0x10)
+			return true;
+		return false;
+	}
+
+
+	public boolean finishedBit() {
+		byte bitMask = 0x40;
+		byte tmp = (byte) (bytes[5] & bitMask);
+		//If finished bit is flipped, value will be 0x24
+		if (tmp == 0x40)
+			return false;
+		return true;
+	}
+
+
+	public void setMonitorBit() {
+		this.bytes[0] = (byte) (this.bytes[0] | 0x10);
+	}
+
+
+	public void zeroMonitorBit() {
+		this.bytes[0] = (byte) (this.bytes[0] & 0x0);
+	}
+
+
+	public void setFinishedBit() {
+		if (this.getSize() != 0) {
+			System.out.println("Cannot set Finished Bits on a non-token frame!");
+			return;
+		}
+		byte bitMask = 0x40;
+		this.bytes[5] = (byte) (this.bytes[5] | bitMask);
+	}
+
+	public byte getFrameStatus() {
+		int sizeOfFrame = this.bytes.length;
+		return this.bytes[sizeOfFrame - 1];
+	}
+
+
+	public void setFrameStatus(byte val) {
+		int sizeOfFrame = this.bytes.length;
+		this.bytes[sizeOfFrame - 1] = val;
+	}
+	*/
 }

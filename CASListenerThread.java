@@ -47,6 +47,7 @@ public class CASListenerThread extends Thread {
 					if(incomingData.equals("TERMINATE")) {
 						break;
 					}
+
 					else if(incomingData.equals("TEST")) {
 						//msg("Recieved Test");
 						continue;
@@ -61,7 +62,9 @@ public class CASListenerThread extends Thread {
 							//int srcNode = Integer.parseInt(tmp[1].substring(0, tmp[1].length() - 1));
 							
 							if(srcSwitch != this.outerSwitch.identificationNumber) {
-								fr.setAcktype(2); //i think something like this would work, idk it's up to you
+								//fr.setAcktype(2); //i think something like this would work, idk it's up to you
+								Frame tmp = new Frame("1", "1", String.valueOf(fr.getSrc()), String.valueOf(srcSwitch), "10");
+								outerSwitch.addFrame(tmp);
 							}
 						}
 						

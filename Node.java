@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -33,7 +34,9 @@ public class Node implements Runnable {
 	private ArrayList<Frame> framesToSend;
 	private ArrayList<Frame> framesRecieved = new ArrayList<Frame>();
 	private Socket socket = null;
-	
+	private ArrayList<Frame> buf = new ArrayList<>();
+
+
 	private int numofLines = 0;
 	
 	public boolean Terminate = false;
@@ -110,20 +113,19 @@ public class Node implements Runnable {
 			String g = null;
 			int k = 0;
 
-			int timer = 0;
-
 			while(true) {
 				
 				fr = null;
 				g = null;
-				if(timer == 0) {
-					writer.println(framesToSend.get(0).getBinaryString());
-					msg("sending: " + framesToSend.get(0).getBinaryString());
-				}
-
-				if(timer > 2) {
-					timer = 0;
-				}
+				int x = 0;
+				/*
+				if(!framesToSend.isEmpty()) {
+					if(buf.isEmpty()) {
+						buf.add(framesToSend.get(0));
+						writer.println(framesToSend.get(0).getBinaryString());
+						framesToSend.remove(0);
+					}
+				} */
 
 				if(framesRecieved.size() != 0) {
 
@@ -136,28 +138,26 @@ public class Node implements Runnable {
 					
 					int srcSwitch = fr.getSSrc();
 					int srcNode = fr.getSrc();
-
-
-
+					/*
 					if(fr.parseData().equals("10") && fr.getACK()) {
 						msg("(" + srcSwitch + "," + srcNode + ")" + " Has been firewalled");
-						framesRecieved.remove(0);
+						buf.clear();
 					} else if(fr.parseData().equals("11") && fr.getACK()) {
 						msg("(" + srcSwitch + "," + srcNode + ")" + " successful acknowledgement");
-						framesRecieved.remove(0);
+						buf.clear();
 					} else if(fr.parseData().equals("01") && fr.getACK()) {
 						msg("(" + srcSwitch + "," + srcNode + ")" + " CRC error, resending");
-						timer = 2;
+						buf.clear();
 					} else if(fr.parseData().equals("00") && fr.getACK()) {
 						msg("(" + srcSwitch + "," + srcNode + ")" + " timeout, resend");
-						//framesRecieved.remove(0);
+						buf.clear();
 					}
-					
+					buf.clear();
+					*/
 					g = Integer.toString(srcSwitch) + "_" + Integer.toString(srcNode) + "," + fr.parseData();
 					//msg("Writing: " + g);
 					writeToTxt(g);
-					timer++;
-					//framesRecieved.remove(fr);
+					framesRecieved.remove(fr);
 					Thread.sleep(500);
 				}
 				else {

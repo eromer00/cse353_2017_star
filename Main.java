@@ -1,5 +1,6 @@
 //package starofstars;
 
+import java.io.*;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,6 +13,7 @@ import javax.swing.text.html.CSS;
 //Requirements:
 //	Node input files to be located in: "./nodes"
 //	Node output files will be placed in "./nodes/output" (created if it doesn't exist)
+//  firewall placed in "./"
 //  CSS Start Port 49152 -> each (i+1)th node becomes a port
 
 
@@ -30,13 +32,24 @@ public class Main {
 	public static int numOfLines = 0;
 	public static ArrayList<String> globalRules = new ArrayList<String>();
 	
-	public static boolean isFirewallEnabled = false; //ability to disable the firewalling function
+	public static boolean isFirewallEnabled = true; //ability to disable the firewalling function
 	
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		
+		/*
+		try {
+			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("cons0ole_output.txt"))));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} */
+
 		boolean testCSSOnly = false;
 		boolean testCASandNodes = false;
+
+		//load firewall file
+		if(isFirewallEnabled) {
+			loadfirewall();
+		}
 		
 		ExecutorService switchExecutor = null;
 		ExecutorService nodeExecutor = null;
@@ -211,4 +224,27 @@ public class Main {
 		return Main.globalRules;
 	}
 
+	synchronized static void loadfirewall() {
+		BufferedReader br = null;
+		String temp = null;
+		File in_file;
+
+		try {
+			msg("Reading input files and storing the information...");
+			in_file = new File("./firewall.txt");
+			br = new BufferedReader(new FileReader(in_file));
+
+			while((temp = br.readLine()) != null) {
+				String[] spl = temp.split("_");
+				String[] gol = spl[1].split(",");
+				getRules().add("(" + spl[0] + "," + gol[0] + ") :local");
+			}
+
+			br.close();
+
+		}catch (Exception e) {
+			msg("ERROR READING IN Firewall FILE --> " + e.toString());
+			e.printStackTrace();
+		}
+	}
 }

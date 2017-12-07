@@ -52,22 +52,13 @@ public class NodeListener extends Thread{
 						incomingData = incomingData.substring(0, incomingData.length() - 1);
 					}
 					Frame fr = new Frame(incomingData);
-					//handle ack
-					int dst = fr.getSrc();
-					int sdst = fr.getSSrc();
-					int src = nodeReference.identificationNumber;
-					int ssrc = nodeReference.switchIdentification;
-					Frame ack = new Frame(String.valueOf(ssrc), String.valueOf(src),
-							String.valueOf(sdst), String.valueOf(dst), "11");
-					msg("received frame:" + fr.getSSrc() + "_" + fr.getSrc() + fr.parseData() +", sending ack:"
-					+ ssrc + src + "11"
-					);
+
 					nodeReference.addFrame(fr);
 
 					//fail to acknowledge 5%
 					int rand = new Random().nextInt(20);
 					if(rand != 10) {
-						nodeReference.addFrame(ack);
+					//	nodeReference.addFrame(ack);
 					}
 				}			
 			}
