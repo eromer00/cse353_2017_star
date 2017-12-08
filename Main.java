@@ -180,7 +180,9 @@ public class Main {
 		}
 		
 		int k = 0;
+		int timer = 0;
 		while(true){
+			//msg("test 1 2 3 ----------------------------------------------------");
 			if(CSSSabotage && k == 50000) {
 				CCS = null;
 			}
@@ -209,10 +211,20 @@ public class Main {
 				break;
 			}
 			k++;
+
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} ;
+			if(timer > 300) {
+				break;
+			}
+			timer++;
 		}
 		
 		msg("finished all transfers, exitting...");
-		System.exit(-1);
+		System.exit(0);
 	}
 	
 	private static void msg (String input) {

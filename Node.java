@@ -107,6 +107,7 @@ public class Node implements Runnable {
 
 				Thread.sleep(50);
 			}
+			/*
 			for(int i = 0; i < framesToSend.size(); i++) {
 				Frame fr = framesToSend.get(i);
 				msg("sending: " + fr.getBinaryString());
@@ -117,7 +118,7 @@ public class Node implements Runnable {
 				//it was faster to implement it with strings honestly
 
 				Thread.sleep(50);
-			}
+			}*/
 			writer.println("TERMINATE"); //so the CASSwitch will know to stop listening to this particular node
 
 			Frame fr = null;
@@ -201,6 +202,7 @@ public class Node implements Runnable {
 					e.printStackTrace();
 				}
 				if(timer > 100) {
+					this.Terminate = true;
 					break;
 				}
 			}

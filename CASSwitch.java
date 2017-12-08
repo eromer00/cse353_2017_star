@@ -143,7 +143,7 @@ public class CASSwitch implements Runnable {
 				}
 				else {
 					msg("no frames to process waiting...");
-					Thread.sleep(900);
+					Thread.sleep(200);
 					/*if(this.tracker > Main.numOfLines) {
 						this.Terminate = true;
 						this.CCSSocket.close();
@@ -168,6 +168,7 @@ public class CASSwitch implements Runnable {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				this.Terminate = true;
 				break;
 			}
 		}

@@ -148,7 +148,7 @@ public class CCSSwitch extends Thread{
 			else {
 				msg("no frames to process waiting...");
 				try {
-					Thread.sleep(800);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -169,6 +169,7 @@ public class CCSSwitch extends Thread{
 			Main.Shadow = this;
 
 			if(timer > 350) {
+				this.Terminate = true;
 				break;
 			}
 		}
