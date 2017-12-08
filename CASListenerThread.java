@@ -15,6 +15,7 @@ public class CASListenerThread extends Thread {
 	public Socket socket = null;
 	public ServerSocket listener = null;
 	private BufferedReader incoming = null;
+	private int timer = 0;
 	
 	public CASListenerThread(int port, CASSwitch outerSwitch) {
 		this.port = port;
@@ -66,20 +67,20 @@ public class CASListenerThread extends Thread {
 								//fr.setAcktype(2); //i think something like this would work, idk it's up to you
 								Frame tmp = new Frame("1", String.valueOf(fr.getSrc()), "2", String.valueOf(srcSwitch), "10");
 								msg("just sent a firewall ack");
-								outerSwitch.addFrame(tmp);
+								//outerSwitch.addFrame(tmp);
 							}
 						}
 						if(fr.genCrc() == 0) {
 							msg("BAD BAD BAD, crc doesn't match up");
 							Frame crcack = new Frame("1", String.valueOf(fr.getSrc()), "2", String.valueOf(fr.getSSrc()), "01");
-							outerSwitch.addFrame(crcack);
+							//outerSwitch.addFrame(crcack);
 							//send = false;
 						}
 						
 					}
 
 					//msg("Added Frame from " + fr.getSrc() + " to the CAS queue");
-					if(send) {
+					//if(send) {
 						outerSwitch.addFrame(fr);
 						//normal ack
 						//5% chance to not acknowledge
@@ -87,9 +88,9 @@ public class CASListenerThread extends Thread {
 						int checkrand = rand.nextInt(20);
 						if (checkrand != 10) {
 							Frame ack = new Frame("1", String.valueOf(fr.getSrc()), "2", String.valueOf(fr.getSSrc()), "11");
-							outerSwitch.addFrame(ack);
+							//outerSwitch.addFrame(ack);
 						}
-					}
+					//}
 					send = true;
 				}
 			}

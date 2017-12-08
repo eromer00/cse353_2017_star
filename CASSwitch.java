@@ -27,6 +27,8 @@ public class CASSwitch implements Runnable {
 	public boolean Terminate = false;
 	
 	public int tracker = 0;
+
+	public int timer = 0;
 	
 	public CASSwitch(int identification, int nodes_per_switch, int startingPort) {
 		this.identificationNumber = identification;
@@ -158,7 +160,16 @@ public class CASSwitch implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
+			timer++;
+			//close after 60 seconds
+			if(timer > 300) {
+				try {
+					this.CCSSocket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				break;
+			}
 		}
 		
 	}

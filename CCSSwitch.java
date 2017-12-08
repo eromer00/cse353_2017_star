@@ -24,6 +24,7 @@ public class CCSSwitch extends Thread{
 	public ArrayList<Frame> frameList = new ArrayList<Frame>();
 	
 	private int tracker = 0;
+	private int timer = 0;
 	
 	private String firewallFile = "./firewall.txt";
 	public static ArrayList<String> fireWallRules = new ArrayList<String>();
@@ -113,7 +114,7 @@ public class CCSSwitch extends Thread{
 
 		
 		while(true) {
-			
+			timer++;
 			if(frameList.size() != 0) {
 					
 				fr = frameList.get(0);
@@ -166,6 +167,10 @@ public class CCSSwitch extends Thread{
 			
 			msg("Shadow backup complete.");
 			Main.Shadow = this;
+
+			if(timer > 350) {
+				break;
+			}
 		}
 		
 	}

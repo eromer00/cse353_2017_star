@@ -99,22 +99,34 @@ public class Node implements Runnable {
 			for(int i = 0; i < framesToSend.size(); i++) {
 				Frame fr = framesToSend.get(i);
 				msg("sending: " + fr.getBinaryString());
-		
+
 				writer.println(fr.getBinaryString()); //uses a string at the moment, find a way to
 				//convert frame to bytes and bytes back to frames while not breaking the 
 				//TERMINATE logic that the listener look for
 				//it was faster to implement it with strings honestly
-				
-				Thread.sleep(250);
+
+				Thread.sleep(50);
 			}
-			//writer.println("TERMINATE"); //so the CASSwitch will know to stop listening to this particular node
+			for(int i = 0; i < framesToSend.size(); i++) {
+				Frame fr = framesToSend.get(i);
+				msg("sending: " + fr.getBinaryString());
+
+				writer.println(fr.getBinaryString()); //uses a string at the moment, find a way to
+				//convert frame to bytes and bytes back to frames while not breaking the
+				//TERMINATE logic that the listener look for
+				//it was faster to implement it with strings honestly
+
+				Thread.sleep(50);
+			}
+			writer.println("TERMINATE"); //so the CASSwitch will know to stop listening to this particular node
 
 			Frame fr = null;
 			String g = null;
 			int k = 0;
+			int timer = 0;
 
 			while(true) {
-				
+				timer++;
 				fr = null;
 				g = null;
 				int x = 0;
@@ -188,7 +200,9 @@ public class Node implements Runnable {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
+				if(timer > 100) {
+					break;
+				}
 			}
 			
 		}catch(Throwable e) {
