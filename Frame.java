@@ -5,35 +5,6 @@ import java.util.Random;
 
 public class Frame {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-old frame
-
-*/
-
-
-
-
-//Remastered Frame 2.0 class, everything works here...
-
-
 	private String size, crc, acktype;
 	private int isEmpty;
 	private String data, src, dst;
@@ -86,7 +57,7 @@ old frame
 		this.ack = true;
 		this.size = "00000000";
 		this.data = acktype;
-		this.crc = size;
+		this.crc = "00000000";
 
 		this.isEmpty = 0;
 		this.badFrame = false;
@@ -100,7 +71,6 @@ old frame
 		this.src_sw = toBinaryInt(Integer.valueOf(src_sw));
 		this.dst_sw = toBinaryInt(Integer.valueOf(dst_sw));
 		this.size = toBinaryInt(data.length());
-		System.out.println("asdf:" + this.size);
 		this.data = toBinary(data);
 		this.crc = size;
 
@@ -116,8 +86,30 @@ old frame
 		}
 	}
 
+	public Frame(String str) {
+		this.src = str.substring(0, 8);
+		this.src_sw = str.substring(8, 16);
+		this.dst = str.substring(16, 24);
+		this.dst_sw = str.substring(24, 32);
+		this.size = str.substring(32, 40);
+		this.data = str.substring(40, str.length()-8);
+		this.crc = str.substring(str.length() - 8);
+
+		if(crc.length() != 8) {
+			msg("CRC IS NOT RIGHT CRC IS NOT RIGHT AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+		}
+
+		//this.data = data.substring(0, data.length()-8);
+		setStr(getBinaryString());
+		if(genCrc() == 0) {
+			this.badFrame = true;
+		} else {
+			this.badFrame = false;
+		}
+	}
+
 	public String getBinaryString() {
-		return this.src + this.src_sw + this.dst + this.dst_sw + this.size + this.data + this.crc;
+		return this.src_sw + this.src + this.dst_sw + this.dst + this.size + this.data + this.crc;
 	}
 	/*
 	public Frame(String str) {
@@ -152,23 +144,7 @@ old frame
 		this.bytes = toString().getBytes();
 	}
 	*/
-	public Frame(String str) {
-		this.src = str.substring(0, 8);
-		this.src_sw = str.substring(8, 16);
-		this.dst = str.substring(16, 24);
-		this.dst_sw = str.substring(24, 32);
-		this.size = str.substring(32, 40);
-		this.data = str.substring(40, str.length()-8);
-		this.crc = data.substring(data.length() - 8);
 
-		//this.data = data.substring(0, data.length()-8);
-		setStr(getBinaryString());
-		if(genCrc() == 0) {
-			this.badFrame = true;
-		} else {
-			this.badFrame = false;
-		}
-	}
 
 	private void setStr(String s) {
 		this.str = s;

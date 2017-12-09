@@ -83,7 +83,7 @@ public class CCSSwitch extends Thread{
 					manage = tmp[1].substring(1, tmp[1].length());
 				}
 				
-				data = "(" + switchValue + "," + nodeValue + ") :" + manage;
+				data = switchValue + "," + nodeValue;
 				//msg ("DATA: " + data);
 				Main.globalRules.add(data);
 			}
@@ -118,32 +118,44 @@ public class CCSSwitch extends Thread{
 			if(frameList.size() != 0) {
 					
 				fr = frameList.get(0);
-				msg("Recieved Frame: " + fr.toString());
+				msg("Recieved Frame: " + fr.getBinaryString());
 				
 				//String[] tmp = fr.getDest().split(",");
 				
 				int dstSwitch = fr.getSdst();
 				int dstNode = fr.getDst();
+				int srcSwitch = fr.getSSrc();
+				int srcNode = fr.getSrc();
 				//(x,*) :local
-				String check = "(" + Integer.toString(dstSwitch) + "," + "*) :local";
+				String check = srcSwitch + "," + "*";
 				
 				
-				
-				if(Main.globalRules.contains(check) && Main.isFirewallEnabled) {
-					msg("Firewall --> blocked traffic to CASSwitch #" + Integer.toString(dstSwitch) + " is enforced");
-					msg("Firewall --> draining frame from queue...");
-					frameList.remove(fr);
+				int x = 0;
+
+				if(Main.isFirewallEnabled) {
+					for(int i = 0; i < Main.globalRules.size(); i++) {
+						String[] spl = Main.globalRules.get(i).split(",");
+						if(Integer.parseInt(spl[0]) == srcSwitch) {
+							msg("Firewall --> blocked traffic to CASSwitch #" + check + " is enforced");
+							msg("Firewall --> draining frame from queue...");
+							frameList.remove(fr);
+							x = 1;
+							break;
+						}
+					}
+
 					continue;
 				}	
 				
 				int sendTo = switchingTable.get(dstSwitch);
 				
 				//msg("WILL SEND TO: " + Integer.toString(sendTo));
-				
-				sendToSwitch s = new sendToSwitch(sendTo, fr);
-				s.start();
-				
-				frameList.remove(fr);
+				if(x == 0) {
+					sendToSwitch s = new sendToSwitch(sendTo, fr);
+					s.start();
+					frameList.remove(fr);
+				}
+				x = 0;
 			}
 			else {
 				msg("no frames to process waiting...");

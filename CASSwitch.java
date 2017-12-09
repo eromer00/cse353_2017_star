@@ -71,6 +71,7 @@ public class CASSwitch implements Runnable {
 			
 			try {			
 				//System.out.println("still going...");
+				int x = 0;
 				if(frameList.size() != 0) {
 					//msg("Ive got frames to process, idk how yet...");
 				
@@ -84,8 +85,10 @@ public class CASSwitch implements Runnable {
 					
 					int dstSwitch = fr.getSdst();
 					int dstNode = fr.getDst();
+					int srcSwitch = fr.getSSrc();
+					int srcNode = fr.getSrc();
 					
-					String check = "(" + Integer.toString(dstSwitch) + "," + Integer.toString(dstNode) + ") :local";
+					String check = srcSwitch + "," + srcNode;
 					
 					//msg("(" + dstSwitch + "," + dstNode + ")");
 					
@@ -111,31 +114,37 @@ public class CASSwitch implements Runnable {
 					else if(dstSwitch == this.identificationNumber) {
 						
 						//firewall check
-						if(Main.getRules().contains(check) && Main.isFirewallEnabled) {
+						if(Main.isFirewallEnabled) {
 							//String[] tmp2 = fr.getSrce().split(",");
 
-							int srcSwitch = fr.getSSrc();
-							int srcNode = fr.getSrc();
 							//String internalCheck = "(" + Integer.toString(srcSwitch) + "," + Integer.toString(srcNode) + ")";
-							//if(srcSwitch != this.identificationNumber) {
-								msg("Firewall --> this node: " + fr.getDst() + " is only accepting local traffic");
-								msg("Firewall --> draining the frame...");
+							for(int i = 0; i < Main.globalRules.size(); i++) {
+								String[] spl = Main.globalRules.get(i).split(",");
+								if(spl[1].contains("*")) continue;
+								if(Integer.parseInt(spl[0]) == srcSwitch && Integer.parseInt(spl[1]) == srcNode) {
+									msg("Firewall --> this node: " + fr.getSSrc() + " is only accepting local traffic");
+									msg("Firewall --> draining the frame...");
 
-								Frame fw = new Frame("1", String.valueOf(srcSwitch), "2", String.valueOf(srcSwitch), "10");
+									Frame fw = new Frame("1", String.valueOf(srcSwitch), "2", String.valueOf(srcSwitch), "10");
 
-								frameList.remove(fr);
-								frameList.add(fw);
-								continue;
-							//}
+									frameList.remove(fr);
+									x = 1;
+									frameList.add(fw);
+									break;
+								}
+							}
+
 						}
 						//if it passes then it can be sent to the node
 						
 						//msg("This frame is meant for me, I'll just send it to the node in my network");
-						int send = this.switchingTable.get(dstNode);
+						if(x == 0) {
+							int send = this.switchingTable.get(dstNode);
 
-						sendToNode cs = new sendToNode(send, fr);
-						cs.start();
-							
+							sendToNode cs = new sendToNode(send, fr);
+							cs.start();
+						}
+						x = 0;
 					}
 					
 					//WHEN DONE REMOVE FRAME FROM QUEUE

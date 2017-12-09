@@ -46,10 +46,6 @@ public class Main {
 		boolean testCSSOnly = false;
 		boolean testCASandNodes = false;
 
-		//load firewall file
-		if(isFirewallEnabled) {
-			loadfirewall();
-		}
 		
 		ExecutorService switchExecutor = null;
 		ExecutorService nodeExecutor = null;
@@ -236,27 +232,4 @@ public class Main {
 		return Main.globalRules;
 	}
 
-	synchronized static void loadfirewall() {
-		BufferedReader br = null;
-		String temp = null;
-		File in_file;
-
-		try {
-			msg("Reading input files and storing the information...");
-			in_file = new File("./firewall.txt");
-			br = new BufferedReader(new FileReader(in_file));
-
-			while((temp = br.readLine()) != null) {
-				String[] spl = temp.split("_");
-				String[] gol = spl[1].split(",");
-				getRules().add("(" + spl[0] + "," + gol[0] + ") :local");
-			}
-
-			br.close();
-
-		}catch (Exception e) {
-			msg("ERROR READING IN Firewall FILE --> " + e.toString());
-			e.printStackTrace();
-		}
-	}
 }
